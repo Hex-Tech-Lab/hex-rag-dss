@@ -1,0 +1,35 @@
+import { supabase } from '../supabase';
+import { generateEmbedding } from './embed';
+
+/**
+ * Vector Search Utility (Action 9.3 & 10.5)
+ * Performs RAG search and prioritizes "New Truths" (Decisions).
+ */
+export const vectorSearch = async (query: string, limit: number = 10) => {
+  const embedding = await generateEmbedding(query);
+
+  // 1. Check for relevant active decisions (Action 10.5)
+  const { data: decisions } = await supabase
+    .from('decisions')
+    .select('*')
+    .eq('is_active', true)
+    .ilike('topic', `%${query}%`)
+    .limit(3);
+
+  // 2. Perform vector search for video chunks
+  const { data: results, error } = await supabase.rpc('match_embeddings', {
+    query_embedding: embedding,
+    match_threshold: 0.5,
+    match_count: limit
+  });
+
+  if (error) {
+    console.error('Vector search error:', error);
+    return { results: [], decisions: decisions || [] };
+  }
+
+  return {
+    results: results || [],
+    decisions: decisions || []
+  };
+};
