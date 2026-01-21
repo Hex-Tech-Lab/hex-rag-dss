@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@web/*": ["apps/web/src/*"],
-      "@shared/*": ["packages/shared/src/*"],
       "@apps/*": ["apps/*"],
-      "@packages/*": ["packages/*"]
+      "@packages/*": ["packages/*"],
+      "@web/*": ["apps/web/src/*"],
+      "@shared/*": ["packages/shared/src/*"]
     },
     "module": "esnext",
     "moduleResolution": "bundler",
