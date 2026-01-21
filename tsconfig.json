@@ -2,10 +2,18 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@apps/*": ["apps/*"],
-      "@packages/*": ["packages/*"],
       "@web/*": ["apps/web/src/*"],
-      "@shared/*": ["packages/shared/src/*"]
-    }
-  }
+      "@shared/*": ["packages/shared/src/*"],
+      "@apps/*": ["apps/*"],
+      "@packages/*": ["packages/*"]
+    },
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["apps/**/*.ts", "apps/**/*.tsx", "packages/**/*.ts", "packages/**/*.tsx"],
+  "exclude": ["node_modules", "**/dist", "**/.next"]
 }
