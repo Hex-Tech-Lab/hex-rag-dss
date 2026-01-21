@@ -16,3 +16,4 @@ pnpm-debug.log*
 .turbo
 node_modules/
 .pnpm-store/
+.env*.local
