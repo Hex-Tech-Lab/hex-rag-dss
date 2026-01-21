@@ -1,0 +1,18 @@
+# Sourcery Configuration
+# Documentation: https://docs.sourcery.ai/Configuration/
+
+ignore:
+  - "node_modules"
+  - "dist"
+  - ".next"
+
+rule_settings:
+  python:
+    enabled: true
+  javascript:
+    enabled: true
+  typescript:
+    enabled: true
+
+metrics:
+  quality_threshold: 80
