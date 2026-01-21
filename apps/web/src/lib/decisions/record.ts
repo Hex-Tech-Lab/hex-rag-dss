@@ -8,7 +8,7 @@ export const recordDecision = async (
   topic: string, 
   decision: string, 
   rationale: string, 
-  sources: any = [],
+  sources: unknown = [],
   supersedesId?: string
 ) => {
   // If superseding, deactivate old decision

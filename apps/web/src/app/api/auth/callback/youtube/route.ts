@@ -26,7 +26,8 @@ export async function GET(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.redirect(new URL('/', request.url));
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

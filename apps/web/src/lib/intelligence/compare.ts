@@ -23,7 +23,7 @@ export const generateComparisonMatrix = async (alternativeA: string, alternative
     throw new Error('Failed to fetch context for comparison');
   }
 
-  const context = (matches || []).map((m: any) => m.content).join('\n---\n');
+  const context = (matches || []).map((m: { content: string }) => m.content).join('\n---\n');
 
   // 2. Build and run the comparison prompt
   const prompt = COMPARISON_MATRIX_PROMPT

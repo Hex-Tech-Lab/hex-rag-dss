@@ -4,7 +4,7 @@ import { getYouTubeClient } from './oauth';
  * YouTube Playlist Discovery (US-002)
  * Fetches the current user's playlists.
  */
-export const listPlaylists = async (tokens: any) => {
+export const listPlaylists = async (tokens: unknown) => {
   const youtube = getYouTubeClient(tokens);
   
   const response = await youtube.playlists.list({

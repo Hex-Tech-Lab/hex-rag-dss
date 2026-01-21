@@ -1,7 +1,6 @@
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import { supabase } from '@/lib/supabase';
@@ -67,7 +66,7 @@ export default async function DecisionsPage() {
           ))
         ) : (
           <Typography variant="body1" color="text.secondary" textAlign="center" sx={{ mt: 8 }}>
-            No decisions recorded yet. Start a session to define "New Truths".
+            No decisions recorded yet. Start a session to define &quot;New Truths&quot;.
           </Typography>
         )}
       </Box>

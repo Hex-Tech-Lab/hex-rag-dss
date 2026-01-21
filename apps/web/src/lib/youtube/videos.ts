@@ -4,7 +4,7 @@ import { getYouTubeClient } from './oauth';
  * Fetch Video Metadata (US-004)
  * Retrieves videos for a specific playlist.
  */
-export const fetchPlaylistVideos = async (playlistId: string, tokens: any) => {
+export const fetchPlaylistVideos = async (playlistId: string, tokens: unknown) => {
   const youtube = getYouTubeClient(tokens);
   
   const response = await youtube.playlistItems.list({
@@ -14,7 +14,7 @@ export const fetchPlaylistVideos = async (playlistId: string, tokens: any) => {
   });
 
   return response.data.items?.map(item => ({
-    youtubeId: item.contentDetails?.videoId!,
+    youtubeId: item.contentDetails?.videoId as string,
     title: item.snippet?.title || 'Untitled',
     channelName: item.snippet?.videoOwnerChannelTitle || '',
     channelId: item.snippet?.videoOwnerChannelId || '',

@@ -6,7 +6,7 @@ import { chunkText } from './chunks';
  * Store Text as Embeddings (Action 9.5)
  * Chunks, embeds, and saves content to Supabase.
  */
-export const storeEmbeddings = async (sourceId: string, sourceType: string, text: string, metadata: any = {}) => {
+export const storeEmbeddings = async (sourceId: string, sourceType: string, text: string, metadata: Record<string, unknown> = {}) => {
   const chunks = chunkText(text);
 
   for (const chunk of chunks) {

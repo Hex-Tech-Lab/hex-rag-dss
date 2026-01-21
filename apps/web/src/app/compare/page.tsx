@@ -32,7 +32,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.matrix?.map((row: any, index: number) => (
+            {data.matrix?.map((row: { criteria: string; altA: string; altB: string }, index: number) => (
               <TableRow key={index}>
                 <TableCell sx={{ fontWeight: 'medium' }}>{row.criteria}</TableCell>
                 <TableCell>{row.altA}</TableCell>

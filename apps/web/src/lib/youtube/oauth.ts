@@ -29,7 +29,7 @@ export const getTokens = async (code: string) => {
   return tokens;
 };
 
-export const getYouTubeClient = (tokens: any) => {
-  oauth2Client.setCredentials(tokens);
+export const getYouTubeClient = (tokens: unknown) => {
+  oauth2Client.setCredentials(tokens as Parameters<typeof oauth2Client.setCredentials>[0]);
   return google.youtube({ version: 'v3', auth: oauth2Client });
 };
