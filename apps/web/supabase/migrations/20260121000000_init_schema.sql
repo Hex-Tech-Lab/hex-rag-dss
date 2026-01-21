@@ -122,3 +122,31 @@ CREATE TABLE decisions (
   decided_at TIMESTAMPTZ DEFAULT NOW()
 );
 CREATE INDEX ON decisions(topic, is_active);
+
+-- 6. Vector Search RPC
+CREATE OR REPLACE FUNCTION match_embeddings (
+  query_embedding vector(1024),
+  match_threshold float,
+  match_count int
+)
+RETURNS TABLE (
+  id uuid,
+  content text,
+  metadata jsonb,
+  similarity float
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    e.id,
+    e.content,
+    e.metadata,
+    1 - (e.embedding <=> query_embedding) AS similarity
+  FROM embeddings e
+  WHERE 1 - (e.embedding <=> query_embedding) > match_threshold
+  ORDER BY e.embedding <=> query_embedding
+  LIMIT match_count;
+END;
+$$;

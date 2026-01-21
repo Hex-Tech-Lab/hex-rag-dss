@@ -25,4 +25,32 @@ Output the result in a structured JSON format with the following 16 sections:
 
 TRANSCRIPT:
 {{transcript}}
+
+/**
+ * Comparison Matrix Prompt (Action 12.1)
+ * Generates a side-by-side analysis of two alternatives.
+ */
+export const COMPARISON_MATRIX_PROMPT = `
+You are a decision support analyst. Based on the provided context, generate a structured comparison matrix between {{alternativeA}} and {{alternativeB}}.
+
+Analyze them across the following criteria:
+1. Philosophy & Core Principles
+2. Implementation Complexity
+3. Scalability & Performance
+4. Ecosystem & Tooling
+5. Pros & Cons
+
+Context from RAG:
+{{context}}
+
+Output the result in a JSON format:
+{
+  "summary": "High-level recommendation",
+  "matrix": [
+    { "criteria": "Principle", "altA": "...", "altB": "..." },
+    ...
+  ],
+  "contrasting_viewpoints": ["..."],
+  "gaps_identified": ["..."]
+}
 `;

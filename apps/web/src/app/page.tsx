@@ -1,6 +1,9 @@
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Link from 'next/link';
 import ConnectYouTubeButton from '@/components/atoms/ConnectYouTubeButton';
 import { supabase } from '@/lib/supabase';
 
@@ -24,6 +27,18 @@ export default async function Home() {
           RAG-Powered Decision Support System (SecondBrain Nucleus)
         </Typography>
         
+        <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+          <Button variant="contained" component={Link} href="/chat">
+            Start Research Chat
+          </Button>
+          <Button variant="outlined" component={Link} href="/compare">
+            Comparison Matrix
+          </Button>
+          <Button variant="text" component={Link} href="/admin/playlists">
+            Manage Playlists
+          </Button>
+        </Stack>
+
         <Box sx={{ mt: 4 }}>
           {isConnected ? (
             <Typography variant="body1" color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
