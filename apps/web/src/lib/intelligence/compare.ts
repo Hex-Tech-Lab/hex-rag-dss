@@ -3,20 +3,44 @@ import { generateEmbedding } from '../rag/embed';
 import { callLLM } from '../llm/openrouter';
 import { COMPARISON_MATRIX_PROMPT } from './prompts';
 
+const removeStopwords = (text: string) => {
+  const stopwords = ['vs', 'comparison', 'and', 'or', 'the', 'a', 'an', 'is', 'to', 'for', 'of', 'in', 'on', 'with'];
+  return text.split(' ').filter(w => !stopwords.includes(w.toLowerCase())).join(' ');
+};
+
 /**
  * Comparison Matrix Generator (Action 12.2)
  * Analyzes two alternatives using RAG-sourced context.
  */
 export const generateComparisonMatrix = async (alternativeA: string, alternativeB: string) => {
   // 1. Fetch context for both alternatives using vector search
-  const searchQuery = `${alternativeA} vs ${alternativeB} comparison`;
+  let searchQuery = `${alternativeA} vs ${alternativeB} comparison`;
   const embedding = await generateEmbedding(searchQuery);
 
-  const { data: matches, error } = await supabase.rpc('match_embeddings', {
+  let { data: matches, error } = await supabase.rpc('match_hybrid_search', {
+    query_text: searchQuery,
     query_embedding: embedding,
     match_threshold: 0.4,
-    match_count: 15
+    match_count: 15,
+    rrf_k: 60
   });
+
+  // Self-Correction: Retry with stripped stopwords if low yield
+  if (matches && matches.length < 2) {
+    console.log('Hybrid search low yield, retrying with stopword removal...');
+    searchQuery = removeStopwords(searchQuery);
+    const retry = await supabase.rpc('match_hybrid_search', {
+      query_text: searchQuery,
+      query_embedding: embedding, // Keep original semantic intent
+      match_threshold: 0.3, // Slightly lower threshold
+      match_count: 15,
+      rrf_k: 60
+    });
+    
+    if (!retry.error && retry.data) {
+      matches = retry.data;
+    }
+  }
 
   if (error) {
     console.error('Comparison context fetch error:', error);

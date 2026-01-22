@@ -16,11 +16,13 @@ export const vectorSearch = async (query: string, limit: number = 10) => {
     .ilike('topic', `%${query}%`)
     .limit(3);
 
-  // 2. Perform vector search for video chunks
-  const { data: results, error } = await supabase.rpc('match_embeddings', {
+  // 2. Perform hybrid search for video chunks (Vector + Keyword)
+  const { data: results, error } = await supabase.rpc('match_hybrid_search', {
+    query_text: query,
     query_embedding: embedding,
-    match_threshold: 0.5,
-    match_count: limit
+    match_threshold: 0.4,
+    match_count: limit,
+    rrf_k: 60
   });
 
   if (error) {
