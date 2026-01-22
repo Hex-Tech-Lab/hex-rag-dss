@@ -123,7 +123,16 @@ CREATE TABLE decisions (
 );
 CREATE INDEX ON decisions(topic, is_active);
 
--- 6. Vector Search RPC
+-- 6. Profiles
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_email TEXT,
+  youtube_tokens JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 7. Vector Search RPC
 CREATE OR REPLACE FUNCTION match_embeddings (
   query_embedding vector(1024),
   match_threshold float,

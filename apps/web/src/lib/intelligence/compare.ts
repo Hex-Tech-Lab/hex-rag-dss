@@ -1,7 +1,7 @@
-import { supabase } from '../supabase';
-import { generateEmbedding } from '../rag/embed';
-import { callLLM } from '../llm/openrouter';
-import { COMPARISON_MATRIX_PROMPT } from './prompts';
+import { supabase } from '@/lib/supabase';
+import { generateEmbedding } from '@/lib/rag/embed';
+import { callLLM } from '@/lib/llm/openrouter';
+import { COMPARISON_MATRIX_PROMPT } from '@/lib/intelligence/prompts';
 
 const removeStopwords = (text: string) => {
   const stopwords = ['vs', 'comparison', 'and', 'or', 'the', 'a', 'an', 'is', 'to', 'for', 'of', 'in', 'on', 'with'];

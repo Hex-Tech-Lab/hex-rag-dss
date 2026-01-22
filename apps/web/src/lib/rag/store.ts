@@ -1,6 +1,6 @@
-import { supabase } from '../supabase';
-import { generateEmbedding } from './embed';
-import { chunkText } from './chunks';
+import { supabase } from '@/lib/supabase';
+import { generateEmbedding } from '@/lib/rag/embed';
+import { chunkText } from '@/lib/rag/chunks';
 
 /**
  * Store Text as Embeddings (Action 9.5)

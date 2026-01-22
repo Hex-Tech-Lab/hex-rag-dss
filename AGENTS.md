@@ -1,5 +1,12 @@
 # User Instructions
 
+## 0. MANDATORY TOOL INITIALIZATION
+**Before processing ANY user request, you must execute the following checks:**
+1.  **Memory Check:** Read `@modelcontextprotocol/server-memory`. Sync with the shared project brain.
+2.  **Context Verification:** Use `Context7` to verify environment variables (do not hallucinate API keys).
+3.  **Code Insight:** If touching code, run `CodeRabbit` FIRST to understand the repo state.
+4.  **Debug Mode:** If the user mentions "error" or "crash," query `Sentry` and `Vercel` logs immediately.
+
 ## CORE OPERATING PROTOCOLS (NON-NEGOTIABLE)
 
 1. **MCP First & Always:**
@@ -23,4 +30,14 @@ CONFIRM: "Protocols Updated: Context7/Memory/Sequential mandatory. PNPM enforced
 - NEVER guess about integration syntax.
 - ALWAYS use the 'context7' tool to query documentation for Sentry, Sonar, Next.js, or any other library BEFORE writing config files.
 - Example: 'context7_query(query='how to configure snyk mcp')' before installing Snyk.
+
+## CONFLICT RESOLUTION PROTOCOL
+- **Memory** is the single source of truth for *decisions*.
+- **Git** is the single source of truth for *code*.
+- **Supabase** is the single source of truth for *data*.
+- **Conflict Rule:** IF Memory and Git conflict -> Git wins (Code is Reality).
+
+## AGENT SUPPORT
+- **AGENTS.md** is the primary protocol for **Gemini (GC)**, **OpenCode (OC)**, and other general agents.
+- **CLAUDE.md** contains specialized protocols for **Claude Code (CC)**.
 

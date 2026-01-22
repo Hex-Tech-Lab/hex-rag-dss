@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { supabase } from '../supabase';
+import { supabase } from '@/lib/supabase';
 
 /**
  * Store Video Intelligence (Action 8.5)

@@ -1,5 +1,5 @@
-import { supabase } from '../supabase';
-import { generateEmbedding } from './embed';
+import { supabase } from '@/lib/supabase';
+import { generateEmbedding } from '@/lib/rag/embed';
 
 /**
  * Vector Search Utility (Action 9.3 & 10.5)
