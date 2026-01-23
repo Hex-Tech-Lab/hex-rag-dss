@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import { supabase } from '@/lib/supabase';
+import { createClient as createBrowserClient } from '@/lib/supabase-ssr/client';
 
 interface Playlist {
   id: string;
@@ -20,6 +20,7 @@ interface Playlist {
 }
 
 export default function PlaylistSelector({ initialPlaylists }: { initialPlaylists: Playlist[] }) {
+  const supabase = createBrowserClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 

@@ -1,12 +1,12 @@
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 import ProcessingQueueList from '@/components/organisms/ProcessingQueueList';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminProcessingPage() {
+  const supabase = await createClient();
   // Fetch synced playlists
   const { data: playlists } = await supabase
     .from('playlists')

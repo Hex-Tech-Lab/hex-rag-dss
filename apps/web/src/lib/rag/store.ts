@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { generateEmbedding } from '@/lib/rag/embed';
 import { chunkText } from '@/lib/rag/chunks';
 
@@ -7,6 +7,7 @@ import { chunkText } from '@/lib/rag/chunks';
  * Chunks, embeds, and saves content to Supabase.
  */
 export const storeEmbeddings = async (sourceId: string, sourceType: string, text: string, metadata: Record<string, unknown> = {}) => {
+  const supabase = await getSupabase();
   const chunks = chunkText(text);
 
   for (const chunk of chunks) {

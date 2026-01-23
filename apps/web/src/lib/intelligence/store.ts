@@ -1,11 +1,11 @@
-// @ts-nocheck
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 
 /**
  * Store Video Intelligence (Action 8.5)
  * Persists extraction results and entities.
  */
 export const storeIntelligence = async (videoId: string, intelligence: Record<string, unknown>) => {
+  const supabase = await getSupabase();
   // 1. Save core intelligence
   const { error: intelError } = await supabase
     .from('video_intelligence')

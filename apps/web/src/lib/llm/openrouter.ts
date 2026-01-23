@@ -1,9 +1,11 @@
+import { env } from '@/lib/env';
+
 /**
  * OpenRouter Client (Action 8.1)
  * Requirement: Access to LLMs for intelligence extraction.
  */
 export const callLLM = async (prompt: string, systemPrompt: string = "") => {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = env.OPENROUTER_API_KEY;
   const model = "anthropic/claude-3.5-sonnet"; // Default high-quality model
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {

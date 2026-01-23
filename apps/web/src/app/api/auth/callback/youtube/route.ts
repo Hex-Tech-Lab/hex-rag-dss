@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getTokens } from '@/lib/youtube/oauth';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -12,13 +12,16 @@ export async function GET(request: NextRequest) {
 
   try {
     const tokens = await getTokens(code);
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const userEmail = user?.email || 'primary@user.com'; // Fallback for MVP if not auth-guarded
     
     // Store tokens in profiles table (Action 5.3)
-    // For MVP 0.0, we use a fixed email or simple identifier
     const { error } = await supabase
       .from('profiles')
       .upsert({ 
-        user_email: 'primary@user.com', 
+        user_email: userEmail, 
         youtube_tokens: tokens,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_email' });

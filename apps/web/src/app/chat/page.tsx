@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Paper, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Paper, List, ListItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import { useRouter } from 'next/navigation';
