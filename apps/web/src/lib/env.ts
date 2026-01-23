@@ -22,13 +22,8 @@ if (!parsed.success) {
   const errors = parsed.error.flatten().fieldErrors;
   const missingKeys = Object.keys(errors).join(', ');
   
-  // In a Server Component environment, this will throw during rendering
-  // and be caught by the nearest error boundary.
   console.error('❌ Environment Variable Validation Failed:', errors);
-  
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error(`Missing or invalid environment variables: ${missingKeys}. Please check Vercel Project Settings.`);
-  }
+  throw new Error(`Missing or invalid environment variables: ${missingKeys}. Please check Vercel Project Settings or .env.local.`);
 }
 
 export const env = parsed.data || {} as z.infer<typeof envSchema>;

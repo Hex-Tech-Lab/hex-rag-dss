@@ -1,86 +1,51 @@
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Alert from '@mui/material/Alert';
-import Link from 'next/link';
-import ConnectYouTubeButton from '@/components/atoms/ConnectYouTubeButton';
-import { createClient } from '@/lib/supabase';
+import { Box } from '@mui/material';
+import TriageSidebar from '@/components/organisms/dashboard/TriageSidebar';
+import ChatCommandCenter from '@/components/organisms/dashboard/ChatCommandCenter';
+import ComparisonPanel from '@/components/organisms/dashboard/ComparisonPanel';
+import { scrapePRData } from '@/lib/github/scraper';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Three-Pane Intelligence Dashboard (Action UI-001)
+ * Pane 1: Triage Feed (Findings)
+ * Pane 2: Command Center (RAG Chat)
+ * Pane 3: Intelligence Matrix (Comparisons)
+ */
 export default async function Home() {
+  // 1. Scrape latest PR data for the Triage Feed
+  let findings: any[] = [];
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // Action 5.5: Check connection status
-    let isConnected = false;
-    const userEmail = user?.email;
-
-    if (userEmail) {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('youtube_tokens')
-        .eq('user_email', userEmail)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is "no rows found"
-        throw profileError;
-      }
-
-      isConnected = !!profile?.youtube_tokens;
+    // Audit the most recent PRs to populate the feed
+    const auditPRs = [4, 3];
+    for (const pr of auditPRs) {
+      const data = await scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', pr);
+      findings = [...findings, ...data.findings];
     }
-
-    return (
-      <Container maxWidth="lg">
-        <Box sx={{ my: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-          <Typography variant="h3" component="h1" fontWeight="bold" gutterBottom>
-            hex-rag-dss
-          </Typography>
-          <Typography variant="h6" color="text.secondary" textAlign="center">
-            RAG-Powered Decision Support System (SecondBrain Nucleus)
-          </Typography>
-          
-          <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
-            <Button variant="contained" component={Link} href="/chat">
-              Start Research Chat
-            </Button>
-            <Button variant="outlined" component={Link} href="/compare">
-              Comparison Matrix
-            </Button>
-            <Button variant="text" component={Link} href="/admin/playlists">
-              Manage Playlists
-            </Button>
-          </Stack>
-
-          <Box sx={{ mt: 4 }}>
-            {isConnected ? (
-              <Typography variant="body1" color="success.main" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                ✅ YouTube Connected
-              </Typography>
-            ) : (
-              <ConnectYouTubeButton />
-            )}
-          </Box>
-        </Box>
-      </Container>
-    );
-  } catch (error: unknown) {
-    console.error('Home Page Error:', error);
-    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
-
-    return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Alert severity="error" sx={{ borderRadius: 2 }}>
-          <Typography variant="h6" gutterBottom>Configuration or Connection Error</Typography>
-          <Typography variant="body2">{message}</Typography>
-          <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
-            Please ensure all environment variables are correctly configured in Vercel.
-          </Typography>
-        </Alert>
-      </Container>
-    );
+  } catch (error) {
+    console.error('Failed to populate triage feed:', error);
+    findings = [
+      { bucket: 'Remaining Risks', message: 'GitHub connectivity status: OFFLINE. Showing cached/mock findings.', tool: 'System' },
+      { bucket: 'Potential Blockers', message: 'Database RRF score column ambiguity resolved in migration #4.', tool: 'Audit' }
+    ];
   }
+
+  return (
+    <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', overflow: 'hidden', bgcolor: '#f4f6f8' }}>
+      {/* Pane 1: Triage Feed (Left) */}
+      <Box sx={{ width: '320px', flexShrink: 0, bgcolor: 'white', borderRight: '1px solid', borderColor: 'divider' }}>
+        <TriageSidebar findings={findings} />
+      </Box>
+
+      {/* Pane 2: Command Center (Center) */}
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minWidth: '400px' }}>
+        <ChatCommandCenter />
+      </Box>
+
+      {/* Pane 3: Intelligence Matrix (Right) */}
+      <Box sx={{ width: '380px', flexShrink: 0, bgcolor: 'white', borderLeft: '1px solid', borderColor: 'divider' }}>
+        <ComparisonPanel />
+      </Box>
+    </Box>
+  );
 }
