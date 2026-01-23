@@ -9,13 +9,18 @@ export default async function Header() {
 
   let isConnected = false;
   if (user?.email) {
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select('youtube_tokens')
       .eq('user_email', user.email)
       .single();
     
+    if (error && error.code !== 'PGRST116') {
+      console.error('Header Auth Check Error:', error);
+    }
+    
     isConnected = !!profile?.youtube_tokens;
+    console.log(`User ${user.email} YouTube Status: ${isConnected ? 'Connected' : 'Disconnected'}`);
   }
 
   return (

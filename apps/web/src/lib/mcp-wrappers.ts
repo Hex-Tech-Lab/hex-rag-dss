@@ -8,6 +8,11 @@ export const github_pull_request_read = async (args: Record<string, unknown>) =>
   // In the agentic loop, the agent replaces this with a tool call.
   // For the code to compile and run, we provide a placeholder.
   console.log('MCP Tool Call: github_pull_request_read', args);
+  
+  if (args.method === 'get_comments') {
+    return []; // Return empty array for comments
+  }
+  
   return { title: 'PR Title', user: { login: 'author' }, body: '' };
 };
 

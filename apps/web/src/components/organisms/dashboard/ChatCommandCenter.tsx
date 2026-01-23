@@ -1,23 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Paper, List, ListItem, CircularProgress } from '@mui/material';
+import { Box, Typography, TextField, Button, Paper, List, ListItem, CircularProgress, InputAdornment } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
-import { useRouter } from 'next/navigation';
-import { askQuestion } from './actions';
+import TerminalIcon from '@mui/icons-material/Terminal';
 import ReactMarkdown from 'react-markdown';
+import { askQuestion } from '@/app/chat/actions';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
 }
 
-export default function ChatPage() {
+export default function ChatCommandCenter() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const router = useRouter();
 
   const handleSend = async () => {
     if (!query.trim() || loading) return;
@@ -34,28 +32,29 @@ export default function ChatPage() {
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: result.content || 'No response generated.' }]);
       }
-    } catch (chatError) {
-      console.error('Chat error:', chatError);
+    } catch (error) {
       setMessages(prev => [...prev, { role: 'assistant', content: 'An unexpected error occurred during retrieval.' }]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCompare = () => {
-    const lastUserMsg = messages.filter(m => m.role === 'user').pop()?.content || query;
-    if (!lastUserMsg) return;
-    router.push(`/compare?topic=${encodeURIComponent(lastUserMsg)}`);
-  };
-
   return (
-    <Container maxWidth="md" sx={{ py: 4, height: '90vh', display: 'flex', flexDirection: 'column' }}>
-      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-        Decision Support Chat
-      </Typography>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', p: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <TerminalIcon color="primary" />
+        <Typography variant="h6" fontWeight="bold">
+          Command Center
+        </Typography>
+      </Box>
 
-      <Paper sx={{ flexGrow: 1, mb: 2, p: 2, overflowY: 'auto', bgcolor: 'grey.50', display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <List sx={{ width: '100%' }}>
+      <Paper sx={{ flexGrow: 1, mb: 2, p: 2, overflowY: 'auto', bgcolor: '#f8f9fa', borderRadius: 2 }}>
+        <List>
+          {messages.length === 0 && (
+            <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 4 }}>
+              Ready for query. Ask about methodology comparisons or system status.
+            </Typography>
+          )}
           {messages.map((msg, i) => (
             <ListItem key={i} sx={{ 
               display: 'flex',
@@ -65,28 +64,26 @@ export default function ChatPage() {
             }}>
               <Paper sx={{ 
                 p: 2, 
-                bgcolor: msg.role === 'user' ? 'primary.main' : 'white',
+                bgcolor: msg.role === 'user' ? 'primary.dark' : 'white',
                 color: msg.role === 'user' ? 'white' : 'text.primary',
-                maxWidth: '85%',
-                borderRadius: msg.role === 'user' ? '20px 20px 0 20px' : '20px 20px 20px 0',
+                maxWidth: '90%',
+                borderRadius: 2,
                 boxShadow: 1
               }}>
-                <Box sx={{ '& p': { m: 0 } }}>
+                <Box sx={{ '& p': { m: 0 }, '& code': { bgcolor: '#eee', p: '2px 4px', borderRadius: '4px' } }}>
                   {msg.role === 'assistant' ? (
                     <ReactMarkdown>{msg.content}</ReactMarkdown>
                   ) : (
-                    <Typography variant="body1">{msg.content}</Typography>
+                    <Typography variant="body2">{msg.content}</Typography>
                   )}
                 </Box>
               </Paper>
             </ListItem>
           ))}
           {loading && (
-            <ListItem sx={{ justifyContent: 'flex-start', px: 0 }}>
-              <Paper sx={{ p: 2, bgcolor: 'white', borderRadius: '20px 20px 20px 0', boxShadow: 1 }}>
-                <CircularProgress size={20} />
-              </Paper>
-            </ListItem>
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
+              <CircularProgress size={24} />
+            </Box>
           )}
         </List>
       </Paper>
@@ -95,7 +92,7 @@ export default function ChatPage() {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Ask a question about the Freedom System or OpenSpec..."
+          placeholder="Enter query..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => {
@@ -108,14 +105,12 @@ export default function ChatPage() {
           }}
           size="small"
           disabled={loading}
+          sx={{ bgcolor: 'white' }}
         />
-        <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />} disabled={loading}>
-          Send
-        </Button>
-        <Button variant="outlined" color="secondary" onClick={handleCompare} endIcon={<CompareArrowsIcon />} disabled={loading}>
-          Compare
+        <Button variant="contained" onClick={handleSend} disabled={loading}>
+          <SendIcon />
         </Button>
       </Box>
-    </Container>
+    </Box>
   );
 }

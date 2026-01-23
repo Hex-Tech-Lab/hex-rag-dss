@@ -5,7 +5,12 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "start": "pnpm --filter web start",
-    "lint": "pnpm --filter web lint"
+    "lint": "pnpm --filter web lint",
+    "test:e2e": "playwright test"
   },
-  "packageManager": "pnpm@10.28.1"
+  "packageManager": "pnpm@10.28.1",
+  "devDependencies": {
+    "@playwright/test": "1.58.0",
+    "playwright": "1.58.0"
+  }
 }
