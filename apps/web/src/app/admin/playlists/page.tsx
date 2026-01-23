@@ -33,7 +33,11 @@ export default async function AdminPlaylistsPage() {
       .eq('user_email', user.email)
       .single();
 
-    if (profileError || !profile?.youtube_tokens) {
+    if (profileError && profileError.code !== 'PGRST116') {
+      throw profileError;
+    }
+
+    if (!profile?.youtube_tokens) {
       return (
         <Container sx={{ py: 8 }}>
           <Alert severity="info" sx={{ borderRadius: 2 }}>

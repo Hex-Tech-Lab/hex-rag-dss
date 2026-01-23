@@ -27,9 +27,10 @@ export const generateComparisonMatrix = async (alternativeA: string, alternative
   });
 
   let matches = initialMatches;
+  let finalError = error;
 
   // Self-Correction: Retry with stripped stopwords if low yield
-  if (matches && matches.length < 2) {
+  if (!error && matches && matches.length < 2) {
     console.log('Hybrid search low yield, retrying with stopword removal...');
     searchQuery = removeStopwords(searchQuery);
     const retry = await supabase.rpc('match_hybrid_search', {
@@ -42,11 +43,14 @@ export const generateComparisonMatrix = async (alternativeA: string, alternative
     
     if (!retry.error && retry.data) {
       matches = retry.data;
+      finalError = null;
+    } else if (retry.error) {
+      finalError = retry.error;
     }
   }
 
-  if (error) {
-    console.error('Comparison context fetch error:', error);
+  if (finalError) {
+    console.error('Comparison context fetch error:', finalError);
     throw new Error('Failed to fetch context for comparison');
   }
 

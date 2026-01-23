@@ -15,7 +15,11 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    const userEmail = user?.email || 'primary@user.com'; // Fallback for MVP if not auth-guarded
+    if (!user) {
+      return NextResponse.redirect(new URL('/auth/login?error=unauthenticated', request.url));
+    }
+
+    const userEmail = user.email;
     
     // Store tokens in profiles table (Action 5.3)
     const { error } = await supabase

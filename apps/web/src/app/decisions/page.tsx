@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 import { createClient } from '@/lib/supabase';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 /**
  * Decision Log Screen (Action 10.2)
@@ -11,11 +13,23 @@ import { createClient } from '@/lib/supabase';
  */
 export default async function DecisionsPage() {
   const supabase = await createClient();
-  const { data: decisions } = await supabase
+  const { data: decisions, error } = await supabase
     .from('decisions')
     .select('*')
     .eq('is_active', true)
     .order('decided_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to fetch decisions:', error);
+    return (
+      <Container sx={{ py: 8 }}>
+        <Alert severity="error" sx={{ borderRadius: 2 }}>
+          <AlertTitle>Database Error</AlertTitle>
+          Failed to load decisions from the system. Please try again later.
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container sx={{ py: 4 }}>

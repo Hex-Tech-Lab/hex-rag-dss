@@ -3,15 +3,36 @@ import { Container, Typography, Grid, Paper, Box, Card, CardContent, Chip, Divid
 
 export const dynamic = 'force-dynamic';
 
+interface IntelligenceEntry {
+  id: string;
+  extracted_at: string;
+  executive_summary: string;
+  header_intelligence: {
+    title?: string;
+    author?: string;
+  };
+  raw_extraction?: string;
+  videos?: {
+    title: string;
+    youtube_id: string;
+  };
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 
   // 1. Fetch latest intelligence
-  const { data: intelligenceEntries } = await supabase
+  const { data, error } = await supabase
     .from('video_intelligence')
     .select('*, videos(title, youtube_id)')
     .order('extracted_at', { ascending: false })
     .limit(5);
+
+  if (error) {
+    console.error('Dashboard Data Fetch Error:', error);
+  }
+
+  const intelligenceEntries = (data as unknown as IntelligenceEntry[]) || [];
 
   // 2. Fetch finding counts (Mocked)
   const stats = {
@@ -56,8 +77,8 @@ export default async function DashboardPage() {
       </Typography>
 
       <Grid container spacing={3}>
-        {intelligenceEntries?.map((entry: any) => {
-          const intel = entry.header_intelligence as any;
+        {intelligenceEntries.map((entry) => {
+          const intel = entry.header_intelligence;
           return (
             <Grid item xs={12} key={entry.id}>
               <Card variant="outlined" sx={{ borderRadius: 2 }}>

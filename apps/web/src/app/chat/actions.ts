@@ -21,7 +21,12 @@ export async function askQuestion(query: string) {
 
     if (error) throw error;
 
-    const context = (matches || []).map((m: any) => m.content).join('\n---\n');
+    let context = (matches as { content: string }[] || []).map((m) => m.content).join('\n---\n');
+    
+    // High Impact: RAG Context Safeguard (Truncate to 4000 chars)
+    if (context.length > 4000) {
+      context = context.substring(0, 4000) + '... [Context Truncated]';
+    }
 
     // 3. LLM Contextualization
     const systemPrompt = `

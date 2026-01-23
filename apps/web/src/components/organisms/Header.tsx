@@ -3,18 +3,23 @@ import { AppBar, Toolbar, Typography, Button, Box, Container } from '@mui/materi
 import { createClient } from '@/lib/supabase';
 import ConnectYouTubeButton from '@/components/atoms/ConnectYouTubeButton';
 
+interface UserProfile {
+  youtube_tokens?: unknown;
+}
+
 export default async function Header() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   let isConnected = false;
   if (user?.email) {
-    const { data: profile } = await supabase
+    const { data } = await supabase
       .from('profiles')
       .select('youtube_tokens')
       .eq('user_email', user.email)
       .single();
     
+    const profile = data as UserProfile | null;
     isConnected = !!profile?.youtube_tokens;
   }
 

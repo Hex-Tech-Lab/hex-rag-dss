@@ -29,7 +29,8 @@ export default function ChatPage() {
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: result.content || 'No response generated.' }]);
       }
-    } catch (error) {
+    } catch (chatError) {
+      console.error('Chat error:', chatError);
       setMessages(prev => [...prev, { role: 'assistant', content: 'An unexpected error occurred during retrieval.' }]);
     } finally {
       setLoading(false);
@@ -92,7 +93,14 @@ export default function ChatPage() {
           placeholder="Ask a question about the Freedom System or OpenSpec..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter') return;
+            const nativeEvent = e.nativeEvent as KeyboardEvent;
+            const isComposing = nativeEvent.isComposing || (nativeEvent as any).keyCode === 229;
+            if (isComposing || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+            e.preventDefault();
+            handleSend();
+          }}
           size="small"
           disabled={loading}
         />

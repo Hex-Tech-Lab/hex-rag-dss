@@ -32,21 +32,29 @@ export default function PlaylistSelector({ initialPlaylists }: { initialPlaylist
 
   const handleSync = async () => {
     setLoading(true);
-    const selectedMetadata = initialPlaylists.filter(p => selectedIds.includes(p.id));
-    
-    // Action 6.4: Save to Supabase
-    for (const p of selectedMetadata) {
-      await supabase.from('playlists').upsert({
-        youtube_id: p.id,
-        title: p.title,
-        description: p.description,
-        video_count: p.videoCount,
-        last_synced_at: new Date().toISOString()
-      });
+    try {
+      const selectedMetadata = initialPlaylists.filter(p => selectedIds.includes(p.id));
+      
+      // Action 6.4: Save to Supabase (Batch Upsert)
+      const { error } = await supabase.from('playlists').upsert(
+        selectedMetadata.map(p => ({
+          youtube_id: p.id,
+          title: p.title,
+          description: p.description,
+          video_count: p.videoCount,
+          last_synced_at: new Date().toISOString()
+        }))
+      );
+
+      if (error) throw error;
+      
+      alert('Playlists selected for indexing!');
+    } catch (error) {
+      console.error('Failed to sync playlists:', error);
+      alert('Failed to save some playlists. Please check the logs.');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
-    alert('Playlists selected for indexing!');
   };
 
   return (

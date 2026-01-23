@@ -31,10 +31,18 @@ export const listPlaylists = async (tokens: unknown) => {
       throw new Error('YouTube session expired. Please reconnect your account.');
     }
     
-    if (err.errors?.[0]?.reason === 'quotaExceeded') {
+    if (err.errors?.some(e => e.reason === 'quotaExceeded')) {
       throw new Error('YouTube API quota exceeded. Please try again later.');
     }
 
-    throw new Error(`Failed to fetch YouTube playlists: ${err.message || 'Unknown error'}`);
+    throw new Error(`YouTube API Error: ${err.message || 'Unknown error'}`);
   }
 };
+
+export interface YouTubePlaylist {
+  id: string;
+  title: string;
+  description: string;
+  videoCount: number;
+  thumbnail: string;
+}
