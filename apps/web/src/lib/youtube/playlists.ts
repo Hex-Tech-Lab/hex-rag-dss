@@ -5,19 +5,34 @@ import { getYouTubeClient } from './oauth';
  * Fetches the current user's playlists.
  */
 export const listPlaylists = async (tokens: unknown) => {
-  const youtube = getYouTubeClient(tokens);
-  
-  const response = await youtube.playlists.list({
-    part: ['snippet', 'contentDetails'],
-    mine: true,
-    maxResults: 50
-  });
+  try {
+    const youtube = getYouTubeClient(tokens);
+    
+    const response = await youtube.playlists.list({
+      part: ['snippet', 'contentDetails'],
+      mine: true,
+      maxResults: 50
+    });
 
-  return response.data.items?.map(item => ({
-    id: item.id!,
-    title: item.snippet?.title || 'Untitled',
-    description: item.snippet?.description || '',
-    videoCount: item.contentDetails?.itemCount || 0,
-    thumbnail: item.snippet?.thumbnails?.default?.url || ''
-  })) || [];
+    return response.data.items?.map(item => ({
+      id: item.id!,
+      title: item.snippet?.title || 'Untitled',
+      description: item.snippet?.description || '',
+      videoCount: item.contentDetails?.itemCount || 0,
+      thumbnail: item.snippet?.thumbnails?.default?.url || ''
+    })) || [];
+  } catch (error: any) {
+    console.error('YouTube API Error (listPlaylists):', error);
+    
+    // Handle specific YouTube API errors
+    if (error.response?.status === 401) {
+      throw new Error('YouTube session expired. Please reconnect your account.');
+    }
+    
+    if (error.errors?.[0]?.reason === 'quotaExceeded') {
+      throw new Error('YouTube API quota exceeded. Please try again later.');
+    }
+
+    throw new Error(`Failed to fetch YouTube playlists: ${error.message || 'Unknown error'}`);
+  }
 };
