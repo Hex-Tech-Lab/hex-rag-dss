@@ -7,6 +7,8 @@ import Link from 'next/link';
 import ConnectYouTubeButton from '@/components/atoms/ConnectYouTubeButton';
 import { supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   // Action 5.5: Check connection status
   const { data: profile } = await supabase

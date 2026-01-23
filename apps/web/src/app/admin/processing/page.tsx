@@ -4,6 +4,8 @@ import Box from '@mui/material/Box';
 import { supabase } from '@/lib/supabase';
 import ProcessingQueueList from '@/components/organisms/ProcessingQueueList';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminProcessingPage() {
   // Fetch synced playlists
   const { data: playlists } = await supabase

@@ -4,6 +4,8 @@ import { listPlaylists } from '@/lib/youtube/playlists';
 import { supabase } from '@/lib/supabase';
 import PlaylistSelector from '@/components/organisms/PlaylistSelector';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminPlaylistsPage() {
   const { data: profile } = await supabase
     .from('profiles')
