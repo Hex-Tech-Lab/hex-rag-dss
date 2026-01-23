@@ -1,4 +1,10 @@
 // @ts-nocheck
+/**
+ * TODO: Post-deploy - Implement concrete classifications for 3-Bucket system:
+ * 1. Critical: Security vulnerabilities (Snyk/Sonar) and build-breakers.
+ * 2. High Impact: Logic gaps in Triage Agent or Hybrid Search fusion.
+ * 3. Potential Blockers: Infrastructure desyncs (Vercel/Supabase).
+ */
 // @ts-expect-error - Conceptual wrappers
 import { github_pull_request_read } from '@/lib/mcp-wrappers'; 
 // @ts-expect-error - Conceptual wrappers
