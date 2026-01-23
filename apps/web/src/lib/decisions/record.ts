@@ -1,4 +1,4 @@
-import { supabase } from '../supabase';
+import { getSupabase } from '@/lib/supabase';
 
 /**
  * Record Decision (Action 10.1)
@@ -11,6 +11,8 @@ export const recordDecision = async (
   sources: unknown = [],
   supersedesId?: string
 ) => {
+  const supabase = await getSupabase();
+  
   // If superseding, deactivate old decision
   if (supersedesId) {
     await supabase

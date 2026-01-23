@@ -3,13 +3,14 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase';
 
 /**
  * Decision Log Screen (Action 10.2)
  * Lists all "New Truths" recorded in the system.
  */
 export default async function DecisionsPage() {
+  const supabase = await createClient();
   const { data: decisions } = await supabase
     .from('decisions')
     .select('*')

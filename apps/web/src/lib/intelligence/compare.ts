@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { generateEmbedding } from '@/lib/rag/embed';
 import { callLLM } from '@/lib/llm/openrouter';
 import { COMPARISON_MATRIX_PROMPT } from '@/lib/intelligence/prompts';
@@ -13,17 +13,20 @@ const removeStopwords = (text: string) => {
  * Analyzes two alternatives using RAG-sourced context.
  */
 export const generateComparisonMatrix = async (alternativeA: string, alternativeB: string) => {
+  const supabase = await getSupabase();
   // 1. Fetch context for both alternatives using vector search
   let searchQuery = `${alternativeA} vs ${alternativeB} comparison`;
   const embedding = await generateEmbedding(searchQuery);
 
-  let { data: matches, error } = await supabase.rpc('match_hybrid_search', {
+  const { data: initialMatches, error } = await supabase.rpc('match_hybrid_search', {
     query_text: searchQuery,
     query_embedding: embedding,
     match_threshold: 0.4,
     match_count: 15,
     rrf_k: 60
   });
+
+  let matches = initialMatches;
 
   // Self-Correction: Retry with stripped stopwords if low yield
   if (matches && matches.length < 2) {

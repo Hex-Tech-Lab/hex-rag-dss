@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { getSupabase } from '@/lib/supabase';
 import { generateEmbedding } from '@/lib/rag/embed';
 
 /**
@@ -6,6 +6,7 @@ import { generateEmbedding } from '@/lib/rag/embed';
  * Performs RAG search and prioritizes "New Truths" (Decisions).
  */
 export const vectorSearch = async (query: string, limit: number = 10) => {
+  const supabase = await getSupabase();
   const embedding = await generateEmbedding(query);
 
   // 1. Check for relevant active decisions (Action 10.5)

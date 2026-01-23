@@ -1,4 +1,3 @@
-// @ts-nocheck
 /**
  * TODO: Post-deploy - Implement concrete classifications for 3-Bucket system:
  * 1. Critical: Security vulnerabilities (Snyk/Sonar) and build-breakers.
@@ -10,9 +9,12 @@ import { github_pull_request_read } from '@/lib/mcp-wrappers';
 // @ts-expect-error - Conceptual wrappers
 import { sonarcloud_issues } from '@/lib/mcp-wrappers';
 
+type Bucket = 'Critical Blockers' | 'High Impact Decisions' | 'Potential Risks';
+
 interface ScraperFinding {
-  type: 'code_quality' | 'security' | 'performance';
-  tool: 'sonar' | 'snyk' | 'coderabbit';
+  bucket: Bucket;
+  type: 'code_quality' | 'security' | 'performance' | 'infrastructure' | 'logic';
+  tool: 'sonar' | 'snyk' | 'coderabbit' | 'manual' | 'triage';
   message: string;
   file?: string;
   line?: number;
@@ -41,13 +43,16 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
   // Map Sonar issues to findings
   if (sonarIssues && Array.isArray(sonarIssues)) {
     sonarIssues.forEach((issue: { type: string; message: string; component: string; line: number; severity: string }) => {
+      const type = issue.type === 'VULNERABILITY' ? 'security' : 'code_quality';
+      const severity = mapSeverity(issue.severity);
       findings.push({
-        type: issue.type === 'VULNERABILITY' ? 'security' : 'code_quality',
+        bucket: classifyBucket(type, severity, issue.message),
+        type,
         tool: 'sonar',
         message: issue.message,
         file: issue.component,
         line: issue.line,
-        severity: mapSeverity(issue.severity)
+        severity
       });
     });
   }
@@ -56,9 +61,33 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
   comments.forEach((comment: { body: string }) => {
     const body = comment.body.toLowerCase();
     if (body.includes('coderabbit') || body.includes('review')) {
+      const type = body.includes('security') ? 'security' : 'code_quality';
       findings.push({
-        type: 'code_quality',
+        bucket: classifyBucket(type, 'medium', comment.body),
+        type,
         tool: 'coderabbit',
+        message: comment.body,
+        severity: 'medium'
+      });
+    }
+
+    // Logic for High Impact Decisions (Triage/Hybrid Search gaps)
+    if (body.includes('triage') || body.includes('hybrid search') || body.includes('ranking')) {
+      findings.push({
+        bucket: 'High Impact Decisions',
+        type: 'logic',
+        tool: 'manual',
+        message: comment.body,
+        severity: 'high'
+      });
+    }
+
+    // Logic for Potential Risks (Infrastructure)
+    if (body.includes('vercel') || body.includes('supabase') || body.includes('env') || body.includes('desync')) {
+      findings.push({
+        bucket: 'Potential Risks',
+        type: 'infrastructure',
+        tool: 'manual',
         message: comment.body,
         severity: 'medium'
       });
@@ -72,10 +101,35 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
     findings,
     summary: {
       total: findings.length,
-      security: findings.filter(f => f.type === 'security').length,
-      quality: findings.filter(f => f.type === 'code_quality').length
+      buckets: {
+        critical: findings.filter(f => f.bucket === 'Critical Blockers').length,
+        high_impact: findings.filter(f => f.bucket === 'High Impact Decisions').length,
+        potential_risks: findings.filter(f => f.bucket === 'Potential Risks').length
+      },
+      security: findings.filter(f => f.type === 'security').length, quality: findings.filter(f => f.type === 'code_quality').length
     }
   };
+}
+
+function classifyBucket(type: string, severity: string, message: string): Bucket {
+  const msg = message.toLowerCase();
+  
+  // 1. Critical: Security vulnerabilities (Snyk/Sonar) and build-breakers
+  if (type === 'security' || severity === 'critical' || msg.includes('vulnerability') || msg.includes('exploit') || msg.includes('build fail')) {
+    return 'Critical Blockers';
+  }
+  
+  // 2. High Impact: Logic gaps in Triage Agent or Hybrid Search fusion
+  if (msg.includes('triage') || msg.includes('hybrid search') || msg.includes('fusion') || msg.includes('logic gap') || msg.includes('ranking')) {
+    return 'High Impact Decisions';
+  }
+  
+  // 3. Potential Risks: Infrastructure desyncs (Vercel/Supabase)
+  if (msg.includes('vercel') || msg.includes('supabase') || msg.includes('env') || msg.includes('desync') || msg.includes('infrastructure')) {
+    return 'Potential Risks';
+  }
+  
+  return 'Potential Risks';
 }
 
 function mapSeverity(severity: string): 'critical' | 'high' | 'medium' | 'low' {

@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { env } from '@/lib/env';
 
 /**
  * YouTube OAuth Client Scaffolding (US-001)
@@ -6,9 +7,9 @@ import { google } from 'googleapis';
  */
 
 const oauth2Client = new google.auth.OAuth2(
-  process.env.YOUTUBE_CLIENT_ID,
-  process.env.YOUTUBE_CLIENT_SECRET,
-  process.env.YOUTUBE_REDIRECT_URI
+  env.YOUTUBE_CLIENT_ID,
+  env.YOUTUBE_CLIENT_SECRET,
+  env.YOUTUBE_REDIRECT_URI
 );
 
 export const getAuthUrl = () => {
