@@ -54,37 +54,39 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
   }
 
   // 3. Process CodeRabbit and other tool comments
-  comments.forEach((comment: { body: string }) => {
-    const body = comment.body.toLowerCase();
-    
-    // Evaluation in priority order to emit at most one finding per comment
-    if (body.includes('coderabbit') || body.includes('review')) {
-      const type = body.includes('security') ? 'security' : 'code_quality';
-      findings.push({
-        bucket: classifyBucket(type, 'medium', comment.body),
-        type,
-        tool: 'coderabbit',
-        message: comment.body,
-        severity: 'medium'
-      });
-    } else if (body.includes('triage') || body.includes('hybrid search') || body.includes('ranking')) {
-      findings.push({
-        bucket: 'High Impact',
-        type: 'logic',
-        tool: 'manual',
-        message: comment.body,
-        severity: 'high'
-      });
-    } else if (body.includes('vercel') || body.includes('supabase') || body.includes('.env') || body.includes('desync')) {
-      findings.push({
-        bucket: 'Potential Blockers',
-        type: 'infrastructure',
-        tool: 'manual',
-        message: comment.body,
-        severity: 'medium'
-      });
-    }
-  });
+  if (comments && Array.isArray(comments)) {
+    comments.forEach((comment: { body: string }) => {
+      const body = comment.body.toLowerCase();
+      
+      // Evaluation in priority order to emit at most one finding per comment
+      if (body.includes('coderabbit') || body.includes('review')) {
+        const type = body.includes('security') ? 'security' : 'code_quality';
+        findings.push({
+          bucket: classifyBucket(type, 'medium', comment.body),
+          type,
+          tool: 'coderabbit',
+          message: comment.body,
+          severity: 'medium'
+        });
+      } else if (body.includes('triage') || body.includes('hybrid search') || body.includes('ranking')) {
+        findings.push({
+          bucket: 'High Impact',
+          type: 'logic',
+          tool: 'manual',
+          message: comment.body,
+          severity: 'high'
+        });
+      } else if (body.includes('vercel') || body.includes('supabase') || body.includes('.env') || body.includes('desync')) {
+        findings.push({
+          bucket: 'Potential Blockers',
+          type: 'infrastructure',
+          tool: 'manual',
+          message: comment.body,
+          severity: 'medium'
+        });
+      }
+    });
+  }
 
   return {
     pr_number: prNumber,
