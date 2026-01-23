@@ -1,28 +1,39 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Typography, Box, TextField, Button, Paper, List, ListItem } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Paper, List, ListItem, CircularProgress } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import { useRouter } from 'next/navigation';
+import { askQuestion } from './actions';
+import ReactMarkdown from 'react-markdown';
 
 export default function ChatPage() {
   const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant', content: string }[]>([]);
   const router = useRouter();
 
-  const handleSend = () => {
-    if (!query.trim()) return;
+  const handleSend = async () => {
+    if (!query.trim() || loading) return;
     
-    setMessages([...messages, { role: 'user', content: query }]);
-    // Simulate assistant response
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: `I've analyzed your query about "${query}". Would you like to see a side-by-side comparison matrix for the systems mentioned?` 
-      }]);
-    }, 1000);
+    const userQuery = query;
     setQuery('');
+    setLoading(true);
+    setMessages(prev => [...prev, { role: 'user', content: userQuery }]);
+
+    try {
+      const result = await askQuestion(userQuery);
+      if (result.error) {
+        setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${result.error}` }]);
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: result.content || 'No response generated.' }]);
+      }
+    } catch (error) {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'An unexpected error occurred during retrieval.' }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCompare = () => {
@@ -43,20 +54,34 @@ export default function ChatPage() {
             <ListItem key={i} sx={{ 
               display: 'flex',
               justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              px: 0
+              px: 0,
+              alignItems: 'flex-start'
             }}>
               <Paper sx={{ 
                 p: 2, 
                 bgcolor: msg.role === 'user' ? 'primary.main' : 'white',
                 color: msg.role === 'user' ? 'white' : 'text.primary',
-                maxWidth: '80%',
+                maxWidth: '85%',
                 borderRadius: msg.role === 'user' ? '20px 20px 0 20px' : '20px 20px 20px 0',
                 boxShadow: 1
               }}>
-                <Typography variant="body1">{msg.content}</Typography>
+                <Box sx={{ '& p': { m: 0 } }}>
+                  {msg.role === 'assistant' ? (
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  ) : (
+                    <Typography variant="body1">{msg.content}</Typography>
+                  )}
+                </Box>
               </Paper>
             </ListItem>
           ))}
+          {loading && (
+            <ListItem sx={{ justifyContent: 'flex-start', px: 0 }}>
+              <Paper sx={{ p: 2, bgcolor: 'white', borderRadius: '20px 20px 20px 0', boxShadow: 1 }}>
+                <CircularProgress size={20} />
+              </Paper>
+            </ListItem>
+          )}
         </List>
       </Paper>
 
@@ -69,11 +94,12 @@ export default function ChatPage() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           size="small"
+          disabled={loading}
         />
-        <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />}>
+        <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />} disabled={loading}>
           Send
         </Button>
-        <Button variant="outlined" color="secondary" onClick={handleCompare} endIcon={<CompareArrowsIcon />}>
+        <Button variant="outlined" color="secondary" onClick={handleCompare} endIcon={<CompareArrowsIcon />} disabled={loading}>
           Compare
         </Button>
       </Box>
