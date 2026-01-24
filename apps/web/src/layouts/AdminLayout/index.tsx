@@ -37,8 +37,8 @@ export default function DashboardLayout({ children }: Props) {
   const { menuMaster, menuMasterLoading } = useGetMenuMaster();
   const { themeDirection } = useConfig();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
-  const downXL = useMediaQuery((theme: any) => theme.breakpoints.down('xl'));
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('md'), { noSsr: true });
+  const downXL = useMediaQuery((theme: any) => theme.breakpoints.down('xl'), { noSsr: true });
 
   useEffect(() => {
     handlerDrawerOpen(!downXL);

@@ -32,7 +32,7 @@ export default function MainDrawer({ window }: Props) {
   const theme = useTheme();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
+  const downLG = useMediaQuery(theme.breakpoints.down('lg'), { noSsr: true });
 
   // Define container for drawer when window is specified
   const container = window !== undefined ? () => window().document.body : undefined;

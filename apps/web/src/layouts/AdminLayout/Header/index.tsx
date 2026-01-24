@@ -28,7 +28,7 @@ import { IconLayoutSidebarRightCollapse, IconMenu2, IconSettings } from '@tabler
 
 export default function Header() {
   const theme = useTheme();
-  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
+  const downLG = useMediaQuery(theme.breakpoints.down('lg'), { noSsr: true });
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { menuMaster } = useGetMenuMaster();

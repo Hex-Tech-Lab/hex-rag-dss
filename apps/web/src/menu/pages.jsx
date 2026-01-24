@@ -27,13 +27,6 @@ const pages = {
           target: true
         }
       ]
-    },
-    {
-      id: 'sample-page',
-      title: 'Sample Page',
-      type: 'item',
-      url: '/sample-page',
-      icon: 'IconBrandChrome'
     }
   ]
 };
