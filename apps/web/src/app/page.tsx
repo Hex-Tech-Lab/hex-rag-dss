@@ -8,9 +8,17 @@ import { ScraperFinding } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Three-Pane Intelligence Dashboard (Action UI-001)
+ * Pane 1: Triage Feed (Findings)
+ * Pane 2: Command Center (RAG Chat)
+ * Pane 3: Intelligence Matrix (Comparisons)
+ */
 export default async function Home() {
+  // 1. Scrape latest PR data for the Triage Feed (Parallelized)
   let findings: ScraperFinding[] = [];
   try {
+    // Audit the most recent PRs to populate the feed
     const auditPRs = [4, 3];
     const results = await Promise.all(
       auditPRs.map(pr => scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', pr))

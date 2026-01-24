@@ -25,7 +25,10 @@ if (!parsed.success) {
   const missingKeys = Object.keys(errors).join(', ');
   
   console.error('❌ Environment Variable Validation Failed:', errors);
-  throw new Error(`Missing or invalid environment variables: ${missingKeys}. Please check Vercel Project Settings or .env.local.`);
+  
+  if (process.env.NODE_ENV === 'production' || !parsed.data) {
+    throw new Error(`Missing or invalid environment variables: ${missingKeys}. Please check Vercel Project Settings or .env.local.`);
+  }
 }
 
-export const env = parsed.data || {} as z.infer<typeof envSchema>;
+export const env = (parsed.success ? parsed.data : {}) as z.infer<typeof envSchema>;
