@@ -39,7 +39,6 @@ export const createServiceClient = getServiceClient;
 
 /**
  * Server-side Supabase client factory.
- * Uses dynamic import to avoid breaking client-side builds with 'next/headers'.
  */
 export const createClient = async () => {
   if (typeof window !== 'undefined') {
@@ -52,14 +51,21 @@ export const createClient = async () => {
 
 /**
  * Utility to get the appropriate Supabase client (Server or Browser).
- * Standardizes lazy access.
  */
 export const getSupabase = async () => {
   return await createClient();
 }
 
-// Singleton for backward compatibility or simple use cases
-export const supabase = createSupabaseClient(
-  env.NEXT_PUBLIC_SUPABASE_URL,
-  env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+/**
+ * Singleton for backward compatibility or simple use cases.
+ * Wrapped in a proxy to ensure lazy initialization and prevent environment-related crashes.
+ */
+export const supabase = new Proxy({} as SupabaseClient, {
+  get: (target, prop) => {
+    const client = createSupabaseClient(
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    );
+    return (client as any)[prop];
+  }
+});

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getTokens } from '@/lib/youtube/oauth';
+import { getTokens, oauth2Client } from '@/lib/youtube/oauth';
 import { createClient } from '@/lib/supabase';
+import { google } from 'googleapis';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -12,14 +13,18 @@ export async function GET(request: NextRequest) {
 
   try {
     const tokens = await getTokens(code);
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    
+    // Fetch user info from Google to get the email
+    const oauth2 = google.oauth2({ version: 'v2', auth: oauth2Client });
+    oauth2Client.setCredentials(tokens);
+    const userInfo = await oauth2.userinfo.get();
+    const userEmail = userInfo.data.email;
 
-    if (!user || !user.email) {
-      return NextResponse.redirect(new URL('/auth/login?error=missing_email', request.url));
+    if (!userEmail) {
+      return NextResponse.redirect(new URL('/?error=missing_email', request.url));
     }
 
-    const userEmail = user.email;
+    const supabase = await createClient();
     
     // Store tokens in profiles table (Action 5.3)
     const { error } = await supabase
