@@ -23,11 +23,11 @@ import {
   IconLayoutSidebarLeftExpand, 
   IconLayoutSidebarRightExpand,
   IconCircleFilled,
-  IconPalette,
   IconQuestionMark,
   IconMail
 } from '@tabler/icons-react';
 import { useConfig } from '@/contexts/ConfigContext';
+import { ThemeDirection } from '@/config';
 
 interface Props {
   open: boolean;
@@ -36,15 +36,19 @@ interface Props {
 
 export default function SettingsDrawer({ open, onClose }: Props) {
   const { 
-    isRTL, 
-    toggleRTL, 
-    language, 
-    setLanguage, 
+    themeDirection,
+    onChangeDirection, 
     isLeftPinned, 
     setLeftPinned, 
     isRightPinned, 
     setRightPinned 
   } = useConfig();
+
+  const isRTL = themeDirection === ThemeDirection.RTL;
+
+  const handleToggleRTL = () => {
+    onChangeDirection(isRTL ? ThemeDirection.LTR : ThemeDirection.RTL);
+  };
 
   return (
     <Drawer
@@ -70,7 +74,7 @@ export default function SettingsDrawer({ open, onClose }: Props) {
         <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2, mt: 1 }}>Layout & Direction</Typography>
         <List disablePadding>
           <ListItem disablePadding>
-            <ListItemButton onClick={toggleRTL}>
+            <ListItemButton onClick={handleToggleRTL}>
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <IconLanguage size={22} color="#606BDF" />
               </ListItemIcon>

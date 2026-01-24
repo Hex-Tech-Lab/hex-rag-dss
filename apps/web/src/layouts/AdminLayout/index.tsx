@@ -37,7 +37,7 @@ interface Props {
 export default function DashboardLayout({ children }: Props) {
   const theme = useTheme();
   const { menuMasterLoading } = useGetMenuMaster();
-  const { isLeftPinned, isRTL } = useConfig();
+  const { isLeftPinned, themeDirection } = useConfig();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   if (menuMasterLoading) return <Loader />;

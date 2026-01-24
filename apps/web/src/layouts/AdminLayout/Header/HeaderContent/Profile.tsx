@@ -54,9 +54,7 @@ const languageList = [
 
 export default function ProfileSection() {
   const theme = useTheme();
-  const {
-    state: { i18n }
-  } = useConfig();
+  const { i18n } = useConfig();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [innerAnchorEl, setInnerAnchorEl] = useState<null | HTMLElement>(null);

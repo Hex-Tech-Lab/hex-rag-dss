@@ -10,11 +10,12 @@ import {
 } from '@tabler/icons-react';
 import { useConfig } from '@/contexts/ConfigContext';
 import SettingsDrawer from '@/components/organisms/settings/SettingsDrawer';
+import { ThemeDirection } from '@/config';
 
 export default function BottomNav() {
   const [value, setValue] = useState(1); // Default to Chat
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const { isRTL } = useConfig();
+  const { themeDirection } = useConfig();
 
   return (
     <>
@@ -38,7 +39,7 @@ export default function BottomNav() {
               minWidth: 0,
               padding: '12px 0',
             },
-            flexDirection: isRTL ? 'row-reverse' : 'row'
+            flexDirection: themeDirection === ThemeDirection.RTL ? 'row-reverse' : 'row'
           }}
         >
           <BottomNavigationAction label="Triage" icon={<IconLayoutSidebarLeftExpand size={22} />} />
