@@ -21,6 +21,7 @@ import Loader from '@/components/Loader';
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { useConfig } from '@/contexts/ConfigContext';
 import { DRAWER_WIDTH } from '@/config';
+import { useHasMounted } from '@/hooks/useHasMounted';
 
 // New Mobile components
 import BottomNav from '@/components/organisms/navigation/BottomNav';
@@ -34,6 +35,7 @@ interface Props {
 /***************************  ADMIN LAYOUT  ***************************/
 
 export default function DashboardLayout({ children }: Props) {
+  const hasMounted = useHasMounted();
   const { menuMaster, menuMasterLoading } = useGetMenuMaster();
   const { themeDirection } = useConfig();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
@@ -41,10 +43,12 @@ export default function DashboardLayout({ children }: Props) {
   const downXL = useMediaQuery((theme: any) => theme.breakpoints.down('xl'), { noSsr: true });
 
   useEffect(() => {
-    handlerDrawerOpen(!downXL);
-  }, [downXL]);
+    if (hasMounted) {
+      handlerDrawerOpen(!downXL);
+    }
+  }, [downXL, hasMounted]);
 
-  if (menuMasterLoading) return <Loader />;
+  if (menuMasterLoading || !hasMounted) return <Loader />;
 
   return (
     <Stack direction="row" width={1}>

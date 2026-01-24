@@ -18,6 +18,7 @@ import menuItems from '@/menu';
 // @ts-expect-error - legacy SaasAble component
 import { useGetBreadcrumbsMaster } from '@/states/breadcrumbs';
 import { generateFocusStyle } from '@/utils/generateFocusStyle';
+import { useHasMounted } from '@/hooks/useHasMounted';
 
 // @assets
 import { IconChevronRight } from '@tabler/icons-react';
@@ -35,6 +36,7 @@ interface BreadcrumbItem {
 /***************************  BREADCRUMBS  ***************************/
 
 export default function Breadcrumbs() {
+  const hasMounted = useHasMounted();
   const theme = useTheme();
   const location = usePathname();
   const { breadcrumbsMaster } = useGetBreadcrumbsMaster();
@@ -43,6 +45,8 @@ export default function Breadcrumbs() {
   const [activeItem, setActiveItem] = useState<BreadcrumbItem | undefined>();
 
   useEffect(() => {
+    if (!hasMounted) return;
+    
     if (breadcrumbsMaster && breadcrumbsMaster.data?.length && breadcrumbsMaster.activePath === location) {
       dataHandler(breadcrumbsMaster.data);
     } else {
@@ -80,6 +84,8 @@ export default function Breadcrumbs() {
     }
     return null;
   }
+
+  if (!hasMounted) return null;
 
   return (
     <MuiBreadcrumbs aria-label="breadcrumb" separator={<IconChevronRight size={16} />}>
