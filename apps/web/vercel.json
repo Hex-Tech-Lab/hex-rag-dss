@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm build",
-  "installCommand": "pnpm install",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/ ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../vercel.json",
   "framework": "nextjs"
 }
