@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 // @mui
 import { useMediaQuery } from '@mui/material';
@@ -16,13 +16,15 @@ import Drawer from './Drawer';
 // @ts-expect-error - legacy SaasAble component
 import Header from './Header';
 // @ts-expect-error - legacy SaasAble component
-import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
-// @ts-expect-error - legacy SaasAble component
 import Breadcrumbs from '@/components/@extended/Breadcrumbs';
 // @ts-expect-error - legacy SaasAble component
 import Loader from '@/components/Loader';
-
+import { useGetMenuMaster } from '@/states/menu';
+import { useConfig } from '@/contexts/ConfigContext';
 import { DRAWER_WIDTH } from '@/config';
+
+// New Mobile components
+import BottomNav from '@/components/organisms/navigation/BottomNav';
 
 /***************************  ADMIN LAYOUT - TYPES  ***************************/
 
@@ -35,27 +37,29 @@ interface Props {
 export default function DashboardLayout({ children }: Props) {
   const theme = useTheme();
   const { menuMasterLoading } = useGetMenuMaster();
-
-  const downXL = useMediaQuery(theme.breakpoints.down('xl'));
-
-  useEffect(() => {
-    handlerDrawerOpen(!downXL);
-  }, [downXL]);
+  const { isLeftPinned, isRTL } = useConfig();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   if (menuMasterLoading) return <Loader />;
 
   return (
     <Stack direction="row" width={1}>
       <Header />
-      <Drawer />
+      {!isMobile && <Drawer />}
+      
       <Box 
         component="main" 
         sx={{ 
-          width: `calc(100% - ${DRAWER_WIDTH}px)`, 
+          width: isMobile ? '100%' : `calc(100% - ${isLeftPinned ? DRAWER_WIDTH : 0}px)`, 
           flexGrow: 1, 
           p: { xs: 2, sm: 3 },
           minHeight: '100vh',
-          bgcolor: 'grey.50'
+          bgcolor: 'grey.50',
+          transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+          pb: isMobile ? '80px' : 3 // Space for bottom nav
         }}
       >
         <Toolbar sx={{ minHeight: { xs: 54, sm: 46, md: 76 } }} />
@@ -76,6 +80,8 @@ export default function DashboardLayout({ children }: Props) {
           {children}
         </Container>
       </Box>
+
+      {isMobile && <BottomNav />}
     </Stack>
   );
 }

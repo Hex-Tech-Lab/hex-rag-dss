@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -9,6 +9,7 @@ import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 
 // @project
 // @ts-expect-error - legacy SaasAble component
@@ -18,15 +19,17 @@ import HeaderContent from './HeaderContent';
 // @ts-expect-error - legacy SaasAble component
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { DRAWER_WIDTH } from '@/config';
+import SettingsDrawer from '@/components/organisms/settings/SettingsDrawer';
 
 // @assets
-import { IconLayoutSidebarRightCollapse, IconMenu2 } from '@tabler/icons-react';
+import { IconLayoutSidebarRightCollapse, IconMenu2, IconSettings } from '@tabler/icons-react';
 
 /***************************  ADMIN LAYOUT - HEADER  ***************************/
 
 export default function Header() {
   const theme = useTheme();
   const downLG = useMediaQuery(theme.breakpoints.down('lg'));
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
@@ -54,6 +57,23 @@ export default function Header() {
       </IconButton>
       <Box sx={{ flexGrow: 1 }} />
       {headerContent}
+      
+      <Tooltip title="Settings">
+        <IconButton
+          onClick={() => setSettingsOpen(true)}
+          size="small"
+          sx={{ 
+            color: 'text.primary', 
+            bgcolor: 'grey.100',
+            borderRadius: 1,
+            ml: 1.5
+          }}
+        >
+          <IconSettings size={20} />
+        </IconButton>
+      </Tooltip>
+
+      <SettingsDrawer open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </Toolbar>
   );
 

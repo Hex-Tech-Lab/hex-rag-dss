@@ -24,9 +24,7 @@ interface Props {
 }
 
 export default function ThemeCustomization({ children }: Props) {
-  const {
-    state: { themeDirection }
-  } = useConfig();
+  const { themeDirection } = useConfig();
 
   const palette = useMemo(() => buildPalette(), []);
 
@@ -44,7 +42,7 @@ export default function ThemeCustomization({ children }: Props) {
       direction: themeDirection,
       colorSchemes: {
         light: {
-          palette: palette.light,
+          palette: palette.light as any,
           customShadows: CustomShadows(palette.light)
         }
       },
