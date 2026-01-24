@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Box, Typography, List, Chip, Stack } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { Warning, WarningOctagon, Info, CheckCircle } from '@phosphor-icons/react';
 import MainCard from '@/components/MainCard';
@@ -31,6 +33,12 @@ const getBucketIcon = (bucket: string) => {
 
 export default function TriageSidebar({ findings }: { findings: Finding[] }) {
   const theme = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const bucketCounts = findings.reduce((acc, f) => {
     acc[f.bucket] = (acc[f.bucket] || 0) + 1;
     return acc;
@@ -64,7 +72,7 @@ export default function TriageSidebar({ findings }: { findings: Finding[] }) {
           </Typography>
 
           <Box sx={{ height: 180, width: '100%', mb: 2, display: 'flex', justifyContent: 'center' }}>
-            {chartData.length > 0 && (
+            {mounted && chartData.length > 0 && (
               <PieChart
                 series={[{
                   data: chartData,

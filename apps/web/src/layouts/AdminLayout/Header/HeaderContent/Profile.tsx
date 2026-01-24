@@ -38,7 +38,7 @@ import { IconChevronRight, IconLanguage, IconLogout, IconSettings, IconTextDirec
 /***************************  HEADER - PROFILE DATA  ***************************/
 
 const profileData = {
-  avatar: { src: '/assets/images/users/avatar-1.png', size: 'xs' }, // size will be mapped in Profile comp
+  avatar: { src: '/next.svg', size: 'xs' }, // Temporary fallback to next.svg to prevent 404 until proper assets are uploaded
   title: 'Erika Collins',
   caption: 'Super Admin'
 };
