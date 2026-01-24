@@ -45,6 +45,7 @@ const profileData = {
 
 const languageList = [
   { key: ThemeI18n.EN, value: 'English' },
+  { key: ThemeI18n.AR, value: 'Arabic' },
   { key: ThemeI18n.FR, value: 'French' },
   { key: ThemeI18n.RO, value: 'Romanian' },
   { key: ThemeI18n.ZH, value: 'Chinese' }
@@ -54,7 +55,7 @@ const languageList = [
 
 export default function ProfileSection() {
   const theme = useTheme();
-  const { i18n } = useConfig();
+  const { i18n, onChangeI18n } = useConfig();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [innerAnchorEl, setInnerAnchorEl] = useState<null | HTMLElement>(null);
@@ -79,7 +80,7 @@ export default function ProfileSection() {
 
   const i18nHandler = (event: MouseEvent<HTMLElement>, key: ThemeI18n) => {
     handleInnerActionClick(event);
-    if (key != i18n) enqueueSnackbar('Upgrade to pro for language change');
+    onChangeI18n(key);
   };
 
   return (

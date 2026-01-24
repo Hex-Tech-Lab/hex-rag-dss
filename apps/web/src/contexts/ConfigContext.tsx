@@ -11,6 +11,7 @@ export interface ConfigContextValue {
   i18n: ThemeI18n;
   onChangeDirection: (direction: ThemeDirection) => void;
   onChangeMiniDrawer: (miniDrawer: boolean) => void;
+  onChangeI18n: (i18n: ThemeI18n) => void;
   // Extra for hex-rag-dss responsive requirements
   isLeftPinned: boolean;
   isRightPinned: boolean;
@@ -25,11 +26,13 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
   
   const [themeDirection, setThemeDirection] = useState<ThemeDirection>(ThemeDirection.LTR);
   const [miniDrawer, setMiniDrawer] = useState<boolean>(false);
+  const [i18n, setI18n] = useState<ThemeI18n>(ThemeI18n.EN);
   const [isLeftPinned, setLeftPinned] = useState(!isMobile);
   const [isRightPinned, setRightPinned] = useState(!isMobile);
 
   const onChangeDirection = (direction: ThemeDirection) => setThemeDirection(direction);
   const onChangeMiniDrawer = (value: boolean) => setMiniDrawer(value);
+  const onChangeI18n = (value: ThemeI18n) => setI18n(value);
 
   // Sync pinning with screen size
   useEffect(() => {
@@ -42,18 +45,28 @@ export function ConfigProvider({ children }: { children: ReactNode }) {
     }
   }, [isMobile]);
 
+  // Sync Direction with i18n (Automatic RTL for Arabic)
+  useEffect(() => {
+    if (i18n === ThemeI18n.AR) {
+      setThemeDirection(ThemeDirection.RTL);
+    } else {
+      setThemeDirection(ThemeDirection.LTR);
+    }
+  }, [i18n]);
+
   const value = useMemo(() => ({
     currentTheme: Themes.THEME_HOSTING,
     themeDirection,
     miniDrawer,
-    i18n: ThemeI18n.EN,
+    i18n,
     onChangeDirection,
     onChangeMiniDrawer,
+    onChangeI18n,
     isLeftPinned,
     isRightPinned,
     setLeftPinned,
     setRightPinned
-  }), [themeDirection, miniDrawer, isLeftPinned, isRightPinned]);
+  }), [themeDirection, miniDrawer, i18n, isLeftPinned, isRightPinned]);
 
   return (
     <ConfigContext.Provider value={value}>

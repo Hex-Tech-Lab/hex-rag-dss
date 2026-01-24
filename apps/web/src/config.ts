@@ -21,14 +21,16 @@ export enum ThemeMode {
 }
 
 export enum ThemeDirection {
-  LTR = 'ltr'
+  LTR = 'ltr',
+  RTL = 'rtl'
 }
 
 export enum ThemeI18n {
   EN = 'en',
   FR = 'fr',
   RO = 'ro',
-  ZH = 'zh'
+  ZH = 'zh',
+  AR = 'ar'
 }
 
 /***************************  CONFIG  ***************************/
