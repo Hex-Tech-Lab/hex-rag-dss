@@ -3,17 +3,18 @@ import { env } from '@/lib/env';
 /**
  * OpenRouter Client (Action 8.1)
  * Requirement: Access to LLMs for intelligence extraction.
+ * Default: google/gemini-flash-1.5 (Fast & Cheap)
+ * Option: anthropic/claude-3.5-sonnet (High Quality)
  */
-export const callLLM = async (prompt: string, systemPrompt: string = "") => {
+export const callLLM = async (prompt: string, systemPrompt: string = "", model: string = "google/gemini-flash-1.5") => {
   const apiKey = env.OPENROUTER_API_KEY;
-  const model = "anthropic/claude-3.5-sonnet"; // Default high-quality model
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "https://hex-rag-dss.vercel.app", // Optional
+      "HTTP-Referer": "https://hex-rag-dss.vercel.app",
       "X-Title": "hex-rag-dss"
     },
     body: JSON.stringify({

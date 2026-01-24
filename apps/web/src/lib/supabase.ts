@@ -45,6 +45,8 @@ export const getSupabase = async () => {
   return await createClient();
 }
 
-// Deprecated singleton
-// @ts-expect-error - Planned removal
-export const supabase = null as unknown;
+// Singleton for backward compatibility or simple use cases
+export const supabase = createSupabaseClient(
+  env.NEXT_PUBLIC_SUPABASE_URL,
+  env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);

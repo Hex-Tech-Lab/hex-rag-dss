@@ -7,9 +7,17 @@ import DashboardLayout from '@/layouts/AdminLayout';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Three-Pane Intelligence Dashboard (Action UI-001)
+ * Pane 1: Triage Feed (Findings)
+ * Pane 2: Command Center (RAG Chat)
+ * Pane 3: Intelligence Matrix (Comparisons)
+ */
 export default async function Home() {
+  // 1. Scrape latest PR data for the Triage Feed
   let findings: any[] = [];
   try {
+    // Audit the most recent PRs to populate the feed
     const auditPRs = [4, 3];
     for (const pr of auditPRs) {
       const data = await scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', pr);
