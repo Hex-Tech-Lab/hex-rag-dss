@@ -1,10 +1,10 @@
 /**
  * OpenRouter Embedding Client (Action 9.1)
- * Requirement: Generate 1024-dim embeddings.
+ * Requirement: Generate 3072-dim embeddings.
  */
 export const generateEmbedding = async (text: string): Promise<number[]> => {
   const apiKey = process.env.OPENROUTER_API_KEY;
-  const model = "openai/text-embedding-3-large"; // 1024 dimensions
+  const model = "openai/text-embedding-3-large"; // Supports up to 3072 dimensions
 
   const response = await fetch("https://openrouter.ai/api/v1/embeddings", {
     method: "POST",
@@ -15,7 +15,7 @@ export const generateEmbedding = async (text: string): Promise<number[]> => {
     body: JSON.stringify({
       model: model,
       input: text.replace(/\n/g, ' '),
-      dimensions: 1024
+      dimensions: 3072
     })
   });
 
