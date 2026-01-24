@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // @next
 import Link from 'next/link';
@@ -13,7 +13,9 @@ import Typography from '@mui/material/Typography';
 
 // @project
 import { APP_DEFAULT_PATH } from '@/config';
+// @ts-expect-error - legacy SaasAble component
 import menuItems from '@/menu';
+// @ts-expect-error - legacy SaasAble component
 import { useGetBreadcrumbsMaster } from '@/states/breadcrumbs';
 import { generateFocusStyle } from '@/utils/generateFocusStyle';
 
@@ -23,6 +25,13 @@ import { IconChevronRight } from '@tabler/icons-react';
 // @data
 const homeBreadcrumb = { title: 'Home', url: APP_DEFAULT_PATH };
 
+/***************************  BREADCRUMBS - TYPES  ***************************/
+
+interface BreadcrumbItem {
+  title: string;
+  url?: string;
+}
+
 /***************************  BREADCRUMBS  ***************************/
 
 export default function Breadcrumbs() {
@@ -30,8 +39,8 @@ export default function Breadcrumbs() {
   const location = usePathname();
   const { breadcrumbsMaster } = useGetBreadcrumbsMaster();
 
-  const [breadcrumbItems, setBreadcrumbItems] = useState([]);
-  const [activeItem, setActiveItem] = useState();
+  const [breadcrumbItems, setBreadcrumbItems] = useState<BreadcrumbItem[]>([]);
+  const [activeItem, setActiveItem] = useState<BreadcrumbItem | undefined>();
 
   useEffect(() => {
     if (breadcrumbsMaster && breadcrumbsMaster.data?.length && breadcrumbsMaster.activePath === location) {
@@ -48,43 +57,36 @@ export default function Breadcrumbs() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [breadcrumbsMaster, location]);
 
-  const dataHandler = (data) => {
+  const dataHandler = (data: BreadcrumbItem[]) => {
     const active = data.at(-1);
     const linkItems = data.slice(0, -1);
-    if (active && active.url != homeBreadcrumb.url) {
+    if (active && active.url !== homeBreadcrumb.url) {
       linkItems.unshift(homeBreadcrumb);
     }
     setActiveItem(active);
     setBreadcrumbItems(linkItems);
   };
 
-  function findParentElements(navItems, targetUrl, parents = []) {
+  function findParentElements(navItems: any[], targetUrl: string, parents: BreadcrumbItem[] = []): BreadcrumbItem[] | null {
     for (const item of navItems) {
-      // Add the current item to the parents array
       const newParents = [...parents, item];
-
-      // Check if the current item matches the target URL
       if (item.url && targetUrl.includes(item.url)) {
-        return newParents; // Return the array of parent elements
+        return newParents;
       }
-
-      // If the item has children, recurse into them
       if (item.children) {
         const result = findParentElements(item.children, targetUrl, newParents);
-        if (result) {
-          return result; // Return the result if found in children
-        }
+        if (result) return result;
       }
     }
-
-    return null; // Return null if no match is found
+    return null;
   }
 
   return (
     <MuiBreadcrumbs aria-label="breadcrumb" separator={<IconChevronRight size={16} />}>
-      {breadcrumbItems.length &&
+      {breadcrumbItems.length > 0 &&
         breadcrumbItems.map((item, index) => (
           <Typography
+            key={index}
             {...(item.url && { component: Link, href: item.url })}
             variant="body2"
             sx={{
@@ -92,18 +94,18 @@ export default function Breadcrumbs() {
               color: 'grey.700',
               textDecoration: 'none',
               ...(item.url && { cursor: 'pointer', ':hover': { color: 'primary.main' } }),
-              ':focus-visible': { outline: 'none', borderRadius: 0.25, ...generateFocusStyle(theme.vars.palette.primary.main) }
+              // @ts-expect-error - theme variables
+              ':focus-visible': { outline: 'none', borderRadius: 0.25, ...generateFocusStyle(theme.palette.primary.main) }
             }}
-            key={index}
           >
             {item.title}
           </Typography>
         ))}
-      <Activity mode={activeItem ? 'visible' : 'hidden'}>
-        <Typography variant="body2" sx={{ p: 0.5 }}>
-          {activeItem?.title}
+      {activeItem && (
+        <Typography variant="body2" sx={{ p: 0.5, color: 'text.primary', fontWeight: 500 }}>
+          {activeItem.title}
         </Typography>
-      </Activity>
+      )}
     </MuiBreadcrumbs>
   );
 }

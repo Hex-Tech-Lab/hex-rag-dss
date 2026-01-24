@@ -1,12 +1,17 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 
 /**
  * Store Video Intelligence (Action 8.5)
  * Persists extraction results and entities.
  */
-export const storeIntelligence = async (videoId: string, intelligence: Record<string, unknown>, client?: unknown) => {
+export const storeIntelligence = async (
+  videoId: string, 
+  intelligence: Record<string, unknown>, 
+  client?: SupabaseClient
+) => {
   try {
-    const supabase: any = client || await getSupabase();
+    const supabase = client || await getSupabase();
     // 1. Save core intelligence
     const { error: intelError } = await supabase
       .from('video_intelligence')

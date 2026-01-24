@@ -8,11 +8,29 @@ const removeStopwords = (text: string) => {
   return text.split(' ').filter(w => !stopwords.includes(w.toLowerCase())).join(' ');
 };
 
+export interface MatrixRow {
+  criteria: string;
+  altA: string;
+  altB: string;
+}
+
+export interface ComparisonMatrixResult {
+  summary: string;
+  matrix: MatrixRow[];
+  contrasting_viewpoints: string[];
+  gaps_identified: string[];
+  raw?: string;
+  error?: string;
+}
+
 /**
  * Comparison Matrix Generator (Action 12.2)
  * Analyzes two alternatives using RAG-sourced context.
  */
-export const generateComparisonMatrix = async (alternativeA: string, alternativeB: string) => {
+export const generateComparisonMatrix = async (
+  alternativeA: string, 
+  alternativeB: string
+): Promise<ComparisonMatrixResult> => {
   const supabase = await getSupabase();
   // 1. Fetch context for both alternatives using vector search
   let searchQuery = `${alternativeA} vs ${alternativeB} comparison`;
@@ -71,11 +89,30 @@ export const generateComparisonMatrix = async (alternativeA: string, alternative
   try {
     const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      const data = JSON.parse(jsonMatch[0]);
+      return {
+        ...data,
+        raw: rawResponse
+      };
     }
-    return { raw: rawResponse };
-  } catch (error) {
-    console.error('Failed to parse comparison matrix JSON:', error);
-    return { raw: rawResponse, error: 'JSON parsing failed' };
+    return { 
+      summary: "Failed to parse structured matrix", 
+      matrix: [], 
+      contrasting_viewpoints: [], 
+      gaps_identified: [], 
+      raw: rawResponse,
+      error: 'No JSON found'
+    };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'JSON parsing failed';
+    console.error('Failed to parse comparison matrix JSON:', err);
+    return { 
+      summary: "Error generating matrix", 
+      matrix: [], 
+      contrasting_viewpoints: [], 
+      gaps_identified: [], 
+      raw: rawResponse, 
+      error: message
+    };
   }
 };

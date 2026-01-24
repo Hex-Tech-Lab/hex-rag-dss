@@ -7,7 +7,13 @@ interface SearchResult {
   similarity: number;
 }
 
-export const detectGaps = (results: SearchResult[], threshold: number = 0.6) => {
+export interface GapResult {
+  isGap: boolean;
+  message?: string;
+  suggestion?: string;
+}
+
+export const detectGaps = (results: SearchResult[], threshold: number = 0.6): GapResult => {
   // If no results or top result is below threshold, it's a gap
   const topResult = results[0];
   

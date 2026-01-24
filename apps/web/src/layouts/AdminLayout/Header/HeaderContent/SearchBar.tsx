@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState, ChangeEvent, KeyboardEvent } fro
 
 // @mui
 import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { useMediaQuery } from '@mui/material';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Fade from '@mui/material/Fade';
 import InputAdornment from '@mui/material/InputAdornment';

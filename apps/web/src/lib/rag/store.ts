@@ -1,3 +1,4 @@
+import { SupabaseClient } from '@supabase/supabase-js';
 import { getSupabase } from '@/lib/supabase';
 import { generateEmbedding } from '@/lib/rag/embed';
 import { chunkText } from '@/lib/rag/chunks';
@@ -6,8 +7,14 @@ import { chunkText } from '@/lib/rag/chunks';
  * Store Text as Embeddings (Action 9.5)
  * Chunks, embeds, and saves content to Supabase.
  */
-export const storeEmbeddings = async (sourceId: string, sourceType: string, text: string, metadata: Record<string, unknown> = {}, client?: unknown) => {
-  const supabase: any = client || await getSupabase();
+export const storeEmbeddings = async (
+  sourceId: string, 
+  sourceType: string, 
+  text: string, 
+  metadata: Record<string, unknown> = {}, 
+  client?: SupabaseClient
+) => {
+  const supabase = client || await getSupabase();
   const chunks = chunkText(text);
 
   for (const chunk of chunks) {
