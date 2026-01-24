@@ -1,5 +1,10 @@
 # hex-rag-dss Context
 
+## SECTION 0: MANDATORY CORE PROTOCOLS
+1. **Checklist & To-Do Workflow:** Generate To-Do lists and Checklists for every task.
+2. **MCP Tool Priority:** Use specialized tools (Sourcerer, Context7) first; Shell is fallback.
+3. **Verify 10x:** Outcomes must be verified with Playwright/Vercel before completion.
+
 ## Project Overview
 **hex-rag-dss** is a RAG-powered Decision Support System (DSS) designed to transform YouTube content into actionable intelligence. It serves as a "SecondBrain Nucleus," enabling users to extract insights from video playlists, identify knowledge gaps, and record timestamped decisions ("new truths").
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, TextField, Button, Paper, List, ListItem, CircularProgress, InputAdornment } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import TerminalIcon from '@mui/icons-material/Terminal';
@@ -13,9 +13,16 @@ interface ChatMessage {
 }
 
 export default function ChatCommandCenter() {
+  const [mounted, setMounted] = useState(false);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   const handleSend = async () => {
     if (!query.trim() || loading) return;

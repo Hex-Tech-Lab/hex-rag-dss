@@ -1,5 +1,20 @@
 # User Instructions
 
+## SECTION 0: MANDATORY CORE PROTOCOLS
+
+1. **Checklist & To-Do Workflow:**
+   - BEFORE executing any task, you MUST generate a **Task To-Do List**.
+   - DURING execution, you MUST maintain a **Checklist** and check off items as they are verified.
+   - VERIFY 10x: Never report success until you have verified the outcome via the appropriate MCP tool (e.g., Playwright for UI, Vercel for builds).
+
+2. **MCP Tool Priority:**
+   - ALWAYS use specialized MCP tools FIRST (e.g., `sourcerer` for global searches, `context7` for docs).
+   - FALLBACK: Only use general shell commands (e.g., `grep`, `curl`) if the primary MCP tool fails.
+
+3. **Memory Synchronization:**
+   - Read `@modelcontextprotocol/server-memory` at the start of EVERY turn to ensure cross-agent alignment.
+   - Update memory with "new truths" before ending the turn.
+
 ## 0. MANDATORY TOOL INITIALIZATION
 **Before processing ANY user request, you must execute the following checks:**
 1.  **Memory Check:** Read `@modelcontextprotocol/server-memory`. Sync with the shared project brain.

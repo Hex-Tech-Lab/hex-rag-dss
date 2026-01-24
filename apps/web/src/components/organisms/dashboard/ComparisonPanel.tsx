@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, List, ListItem, ListItemText, Divider, Chip } from '@mui/material';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
@@ -11,6 +12,14 @@ interface ComparisonData {
 }
 
 export default function ComparisonPanel({ data }: { data?: ComparisonData }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
   if (!data) {
     return (
       <Box sx={{ height: '100%', p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '1px solid', borderColor: 'divider' }}>
