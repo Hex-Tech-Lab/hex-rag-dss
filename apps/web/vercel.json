@@ -1,1 +1,6 @@
-{"regions": ["fra1"], "framework": "nextjs"}
+{
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../../packages/ ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ../../vercel.json",
+  "framework": "nextjs"
+}
