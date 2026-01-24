@@ -31,13 +31,16 @@ const MainCard = forwardRef<HTMLDivElement, MainCardProps>(({ children, sx = {},
 
   return (
     <motion.div
-      whileHover={{ scale: 1.01 }}
+      whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
     >
       <Card 
         ref={ref} 
         elevation={0} 
-        sx={{ ...defaultSx, ...(Array.isArray(sx) ? sx : [sx]) }} 
+        sx={(theme) => ({
+          ...defaultSx,
+          ...(typeof sx === 'function' ? sx(theme) : sx)
+        })} 
         {...others}
       >
         {children}

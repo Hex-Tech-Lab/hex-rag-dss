@@ -44,6 +44,10 @@ export default function ThemeCustomization({ children }: Props) {
         light: {
           palette: palette.light as any,
           customShadows: CustomShadows(palette.light)
+        },
+        dark: {
+          palette: palette.light as any, // Temporary fallback to light palette for dark mode
+          customShadows: CustomShadows(palette.light)
         }
       },
       cssVariables: {

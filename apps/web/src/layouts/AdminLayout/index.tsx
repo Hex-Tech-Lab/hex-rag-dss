@@ -19,7 +19,7 @@ import Header from './Header';
 import Breadcrumbs from '@/components/@extended/Breadcrumbs';
 // @ts-expect-error - legacy SaasAble component
 import Loader from '@/components/Loader';
-import { useGetMenuMaster } from '@/states/menu';
+import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { useConfig } from '@/contexts/ConfigContext';
 import { DRAWER_WIDTH } from '@/config';
 
@@ -39,6 +39,12 @@ export default function DashboardLayout({ children }: Props) {
   const { menuMasterLoading } = useGetMenuMaster();
   const { isLeftPinned, themeDirection } = useConfig();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    if (!isMobile) {
+      handlerDrawerOpen(isLeftPinned);
+    }
+  }, [isLeftPinned, isMobile]);
 
   if (menuMasterLoading) return <Loader />;
 
@@ -76,7 +82,7 @@ export default function DashboardLayout({ children }: Props) {
         >
           <Breadcrumbs />
         </Box>
-        <Container maxWidth={false} sx={{ px: { xs: 0, sm: 2 } }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 0, sm: 2 } }}>
           {children}
         </Container>
       </Box>
