@@ -3,7 +3,14 @@ import { useMemo } from 'react';
 // @third-party
 import useSWR, { mutate } from 'swr';
 
-const initialState = {
+/***************************  MENU STATE - TYPES  ***************************/
+
+export interface MenuMaster {
+  openedItem: string;
+  isDashboardDrawerOpened: boolean;
+}
+
+const initialState: MenuMaster = {
   openedItem: '',
   isDashboardDrawerOpened: false
 };
@@ -13,9 +20,9 @@ export const endpoints = {
   master: 'master'
 };
 
-export function useGetMenuMaster() {
-  // to fetch initial state based on endpoints
+/***************************  MENU STATE - HOOKS  ***************************/
 
+export function useGetMenuMaster() {
   const { data, isLoading } = useSWR(endpoints.key + endpoints.master, () => initialState, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
@@ -24,7 +31,7 @@ export function useGetMenuMaster() {
 
   const memoizedValue = useMemo(
     () => ({
-      menuMaster: data,
+      menuMaster: data || initialState,
       menuMasterLoading: isLoading
     }),
     [data, isLoading]
@@ -33,24 +40,22 @@ export function useGetMenuMaster() {
   return memoizedValue;
 }
 
-export function handlerDrawerOpen(isDashboardDrawerOpened) {
-  // to update `isDashboardDrawerOpened` local state based on key
+/***************************  MENU STATE - HANDLERS  ***************************/
 
+export function handlerDrawerOpen(isDashboardDrawerOpened: boolean) {
   mutate(
     endpoints.key + endpoints.master,
-    (currentMenuMaster = initialState) => {
+    (currentMenuMaster: MenuMaster = initialState) => {
       return { ...currentMenuMaster, isDashboardDrawerOpened };
     },
     false
   );
 }
 
-export function handlerActiveItem(openedItem) {
-  // to update `openedItem` local state based on key
-
+export function handlerActiveItem(openedItem: string) {
   mutate(
     endpoints.key + endpoints.master,
-    (currentMenuMaster = initialState) => {
+    (currentMenuMaster: MenuMaster = initialState) => {
       return { ...currentMenuMaster, openedItem };
     },
     false

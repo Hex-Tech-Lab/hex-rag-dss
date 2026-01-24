@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo } from 'react';
 
 // @mui
@@ -6,10 +8,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import AppBar from '@mui/material/AppBar';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
+import Box from '@mui/material/Box';
 
 // @project
+// @ts-expect-error
 import AppBarStyled from './AppBarStyled';
+// @ts-expect-error
 import HeaderContent from './HeaderContent';
+// @ts-expect-error
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { DRAWER_WIDTH } from '@/config';
 
@@ -30,33 +36,37 @@ export default function Header() {
 
   // Common header content
   const mainHeader = (
-    <Toolbar sx={{ minHeight: { xs: 68, md: 76 } }}>
+    <Toolbar sx={{ minHeight: { xs: 68, md: 76 }, px: { xs: 2, sm: 3 } }}>
       <IconButton
         aria-label="open drawer"
         onClick={() => handlerDrawerOpen(!drawerOpen)}
         size="small"
-        color="secondary"
-        variant="outlined"
-        sx={{ display: { xs: 'inline-flex', lg: !drawerOpen ? 'inline-flex' : 'none' }, mr: 1 }}
+        sx={{ 
+          color: 'text.primary', 
+          bgcolor: 'grey.100',
+          borderRadius: 1,
+          display: { xs: 'inline-flex', lg: !drawerOpen ? 'inline-flex' : 'none' }, 
+          mr: 2 
+        }}
       >
-        <>
-          {!drawerOpen && !downLG && <IconLayoutSidebarRightCollapse size={20} />}
-          {downLG && <IconMenu2 size={20} />}
-        </>
+        {!drawerOpen && !downLG && <IconLayoutSidebarRightCollapse size={20} />}
+        {downLG && <IconMenu2 size={20} />}
       </IconButton>
+      <Box sx={{ flexGrow: 1 }} />
       {headerContent}
     </Toolbar>
   );
 
   // AppBar props, including styles that vary based on drawer state and screen size
   const appBar = {
-    color: 'inherit',
-    position: 'fixed',
+    color: 'inherit' as const,
+    position: 'fixed' as const,
     elevation: 0,
     sx: {
-      borderBottom: `1px solid ${theme.vars.palette.grey[300]}`,
+      borderBottom: `1px solid ${theme.palette.divider}`,
       zIndex: 1200,
-      width: { xs: '100%', lg: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : 1 }
+      width: { xs: '100%', lg: drawerOpen ? `calc(100% - ${DRAWER_WIDTH}px)` : 1 },
+      bgcolor: 'background.paper'
     }
   };
 

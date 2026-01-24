@@ -1,11 +1,15 @@
+// @mui
+import { TypographyOptions } from '@mui/material/styles/createTypography';
+
 // @project
 import { FONT_ARCHIVO } from '@/config';
 
 /***************************  DEFAULT - TYPOGRAPHY  ***************************/
 
-export default function typography() {
+export default function typography(): TypographyOptions {
   return {
     fontFamily: FONT_ARCHIVO,
+    // @ts-expect-error
     letterSpacing: 0,
 
     // heading - h1
@@ -86,17 +90,9 @@ export default function typography() {
       letterSpacing: 0
     },
 
-    // caption - medium
-    caption1: {
-      fontWeight: 500,
-      fontSize: 12,
-      lineHeight: '16px',
-      letterSpacing: 0
-    },
-
     // button
     button: {
-      textTransform: 'capitalize'
+      textTransform: 'none' // Minimalist preference
     }
   };
 }

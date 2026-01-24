@@ -13,7 +13,7 @@ interface Finding {
 
 const getBucketColor = (bucket: string) => {
   switch (bucket) {
-    case 'Critical': return '#f44336';
+    case 'Critical': return '#DBADFF';
     case 'High Impact': return '#ff9800';
     case 'Potential Blockers': return '#2196f3';
     default: return '#4caf50';
@@ -22,7 +22,7 @@ const getBucketColor = (bucket: string) => {
 
 const getBucketIcon = (bucket: string) => {
   switch (bucket) {
-    case 'Critical': return <WarningOctagon size={18} weight="thin" color="#f44336" />;
+    case 'Critical': return <WarningOctagon size={18} weight="thin" color="#DBADFF" />;
     case 'High Impact': return <Warning size={18} weight="thin" color="#ff9800" />;
     case 'Potential Blockers': return <Info size={18} weight="thin" color="#2196f3" />;
     default: return <CheckCircle size={18} weight="thin" color="#4caf50" />;
@@ -30,6 +30,7 @@ const getBucketIcon = (bucket: string) => {
 };
 
 export default function TriageSidebar({ findings }: { findings: Finding[] }) {
+  const theme = useTheme();
   const bucketCounts = findings.reduce((acc, f) => {
     acc[f.bucket] = (acc[f.bucket] || 0) + 1;
     return acc;
@@ -39,11 +40,20 @@ export default function TriageSidebar({ findings }: { findings: Finding[] }) {
     id,
     value,
     label,
-    color: getBucketColor(label)
+    color: label === 'Critical' ? '#DBADFF' : getBucketColor(label)
   }));
 
   return (
-    <Box sx={{ height: '100%', overflowY: 'auto', pr: 1 }}>
+    <Box sx={{ 
+      height: '100%', 
+      overflowY: 'auto', 
+      pr: 1,
+      background: 'rgba(255, 255, 255, 0.4)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      borderRadius: 4,
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+    }}>
       <Stack spacing={3}>
         <MainCard>
           <Typography variant="h6" fontWeight={700} sx={{ mb: 0.5 }}>

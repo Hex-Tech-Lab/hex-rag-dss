@@ -3,7 +3,7 @@ import { extendPaletteWithChannels, withAlpha } from '@/utils/colorUtils';
 
 /***************************  DEFAULT - PALETTE  ***************************/
 
-export function buildPalette() {
+export function buildPalette(): any {
   const textPrimary = '#1B1B1F'; // Hosting/neutral/10 - on surface
   const textSecondary = '#46464F'; // Hosting/neutral variant/30 - on surface variant
 

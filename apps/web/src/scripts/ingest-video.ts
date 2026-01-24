@@ -15,11 +15,12 @@ async function ingestVideo(videoId: string) {
     let transcript = '';
     try {
       const output = execSync(`uvx --from youtube-transcript-api youtube_transcript_api ${videoId}`, { encoding: 'utf-8' });
-      // The output is a string representation of a Python list of lists of dicts: [[{...}]]
-      // We'll use a simple regex to extract the 'text' fields since it's not pure JSON
       const textMatches = output.match(/'text':\s*'([^']*)'/g);
       if (textMatches) {
-        transcript = textMatches.map(m => m.match(/'text':\s*'([^']*)'/)![1]).join(' ');
+        transcript = textMatches.map(m => {
+          const match = m.match(/'text':\s*'([^']*)'/);
+          return match ? match[1].replace(/\\'/g, "'") : '';
+        }).join(' ');
       }
     } catch (err) {
       console.error('Transcript fetch error:', err);
@@ -37,7 +38,7 @@ async function ingestVideo(videoId: string) {
       .from('videos')
       .upsert({
         youtube_id: videoId,
-        title: 'Spec-Driven Development vs Freedom System (Ingested via Robust CLI)',
+        title: 'Spec-Driven Development Deep Dive (Ingested via uvx)',
         channel_name: 'LaravelDaily',
         transcript: transcript,
         processed_at: new Date().toISOString()

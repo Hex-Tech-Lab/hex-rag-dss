@@ -1,13 +1,21 @@
+'use client';
+
 // @mui
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
 // @project
+// @ts-expect-error
 import Notification from './Notification';
+// @ts-expect-error
 import Profile from './Profile';
+// @ts-expect-error
 import SearchBar from './SearchBar';
-import Breadcrumbs from '@/components/Breadcrumbs';
+// @ts-expect-error
+import Breadcrumbs from '@/components/@extended/Breadcrumbs';
+// @ts-expect-error
 import ThemeModeSwitcher from './ThemeModeSwitcher';
+import YouTubeStatus from './YouTubeStatus';
 
 /***************************  HEADER CONTENT  ***************************/
 
@@ -19,6 +27,7 @@ export default function HeaderContent() {
           <Breadcrumbs />
         </Box>
         <Stack direction="row" sx={{ alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
+          <YouTubeStatus />
           <SearchBar />
           <ThemeModeSwitcher />
           <Notification />

@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 
 /***************************  HOOKS - LOCAL STORAGE  ***************************/
 
-export default function useLocalStorage(key, defaultValue) {
+export default function useLocalStorage<T>(key: string, defaultValue: T) {
   // Load initial state from localStorage or fallback to default
-  const readValue = () => {
+  const readValue = useCallback((): T => {
     if (typeof window === 'undefined') return defaultValue;
 
     try {
@@ -14,9 +14,9 @@ export default function useLocalStorage(key, defaultValue) {
       console.warn(`Error reading localStorage key “${key}”:`, err);
       return defaultValue;
     }
-  };
+  }, [defaultValue, key]);
 
-  const [state, setState] = useState(readValue);
+  const [state, setState] = useState<T>(readValue);
 
   // Sync to localStorage whenever state changes
   useEffect(() => {
@@ -28,10 +28,10 @@ export default function useLocalStorage(key, defaultValue) {
   }, [key, state]);
 
   // Update single field
-  const setField = useCallback((key, value) => {
+  const setField = useCallback((field: keyof T, value: any) => {
     setState((prev) => ({
       ...prev,
-      [key]: value
+      [field]: value
     }));
   }, []);
 

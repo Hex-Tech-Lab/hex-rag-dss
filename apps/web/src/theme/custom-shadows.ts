@@ -3,7 +3,14 @@ import { withAlpha } from '@/utils/colorUtils';
 
 /***************************  DEFAULT THEME - SHADOWS  ***************************/
 
-export default function CustomShadows(palette) {
+export interface CustomShadowProps {
+  button: string;
+  section: string;
+  tooltip: string;
+  focus: string;
+}
+
+export default function CustomShadows(palette: any): CustomShadowProps {
   const shadowColor = palette.text.primary;
   const primaryColor = palette.primary.main;
 

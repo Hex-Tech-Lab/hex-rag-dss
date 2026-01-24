@@ -12,36 +12,35 @@ export const CSS_VAR_PREFIX = '';
 
 /***************************  THEME ENUM  ***************************/
 
-export let Themes;
+export enum Themes {
+  THEME_HOSTING = 'hosting'
+}
 
-(function (Themes) {
-  Themes['THEME_HOSTING'] = 'hosting';
-})(Themes || (Themes = {}));
+export enum ThemeMode {
+  LIGHT = 'light'
+}
 
-export let ThemeMode;
+export enum ThemeDirection {
+  LTR = 'ltr'
+}
 
-(function (ThemeMode) {
-  ThemeMode['LIGHT'] = 'light';
-})(ThemeMode || (ThemeMode = {}));
-
-export let ThemeDirection;
-
-(function (ThemeDirection) {
-  ThemeDirection['LTR'] = 'ltr';
-})(ThemeDirection || (ThemeDirection = {}));
-
-export let ThemeI18n;
-
-(function (ThemeI18n) {
-  ThemeI18n['EN'] = 'en';
-  ThemeI18n['FR'] = 'fr';
-  ThemeI18n['RO'] = 'ro';
-  ThemeI18n['ZH'] = 'zh';
-})(ThemeI18n || (ThemeI18n = {}));
+export enum ThemeI18n {
+  EN = 'en',
+  FR = 'fr',
+  RO = 'ro',
+  ZH = 'zh'
+}
 
 /***************************  CONFIG  ***************************/
 
-const config = {
+export interface Config {
+  currentTheme: Themes;
+  themeDirection: ThemeDirection;
+  miniDrawer: boolean;
+  i18n: ThemeI18n;
+}
+
+const config: Config = {
   currentTheme: Themes.THEME_HOSTING,
   themeDirection: ThemeDirection.LTR,
   miniDrawer: false,
