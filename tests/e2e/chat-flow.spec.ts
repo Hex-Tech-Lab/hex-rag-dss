@@ -15,15 +15,13 @@ test('Chat Flow Smoke Test - Verification of 4-bucket classification', async ({ 
   await chatInput.fill('Verify 3-bucket vs 4-bucket classification.');
   await page.keyboard.press('Enter');
 
-  // 4. Assert response
-  const assistantMessage = page.locator('.MuiPaper-root', { hasText: /Verify 3-bucket/ }).first();
+  // 4. Assert response using stable data-testids
+  const messages = page.getByTestId('chat-message');
   
-  // Wait for loading to finish (indicated by the presence of markdown content or disappearance of progress)
-  // The Server Action might take a few seconds
-  await expect(page.locator('.MuiCircularProgress-root')).not.toBeVisible({ timeout: 15000 });
+  // Wait for the second message (assistant response) to appear
+  await expect(messages).toHaveCount(2, { timeout: 20000 });
 
-  // Get the last message which should be from the assistant
-  const lastMessage = page.locator('.MuiPaper-root').last();
+  const lastMessage = messages.last();
   const text = await lastMessage.innerText();
 
   expect(text.length).toBeGreaterThan(10);

@@ -1,5 +1,5 @@
 import { createBrowserClient as createSupabaseBrowserClient } from '@supabase/ssr'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createClient as createSupabaseClient, SupabaseClient } from '@supabase/supabase-js'
 import { env } from '@/lib/env'
 
 /**
@@ -15,16 +15,27 @@ export const createBrowserClient = () =>
 /**
  * Service-side Supabase client for background tasks and scripts.
  * Uses Service Role key - BYPASSES RLS.
+ * Lazy getter pattern to prevent early env dependency.
  */
-export const createServiceClient = () => {
+let serviceClient: SupabaseClient | null = null;
+
+export const getServiceClient = () => {
+  if (serviceClient) return serviceClient;
+
   if (!env.SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for service client');
   }
-  return createSupabaseClient(
+  
+  serviceClient = createSupabaseClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.SUPABASE_SERVICE_ROLE_KEY
-  )
+  );
+  
+  return serviceClient;
 }
+
+// Backward compatibility alias
+export const createServiceClient = getServiceClient;
 
 /**
  * Server-side Supabase client factory.
@@ -34,17 +45,15 @@ export const createClient = async () => {
   if (typeof window !== 'undefined') {
     return createBrowserClient();
   }
+  // @ts-ignore
   const { createClient: createServerClient } = await import('./supabase-ssr/server');
   return createServerClient();
 }
 
 /**
  * Utility to get the appropriate Supabase client (Server or Browser).
+ * Standardizes lazy access.
  */
 export const getSupabase = async () => {
   return await createClient();
 }
-
-// Deprecated singleton
-// @ts-expect-error - Planned removal
-export const supabase = null as unknown;

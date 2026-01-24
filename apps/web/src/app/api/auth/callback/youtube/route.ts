@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    if (!user) {
-      return NextResponse.redirect(new URL('/auth/login?error=unauthenticated', request.url));
+    if (!user || !user.email) {
+      return NextResponse.redirect(new URL('/auth/login?error=missing_email', request.url));
     }
 
     const userEmail = user.email;

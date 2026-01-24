@@ -49,14 +49,14 @@ export default function ChatCommandCenter() {
       </Box>
 
       <Paper sx={{ flexGrow: 1, mb: 2, p: 2, overflowY: 'auto', bgcolor: '#f8f9fa', borderRadius: 2 }}>
-        <List>
+        <List data-testid="chat-messages">
           {messages.length === 0 && (
             <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 4 }}>
               Ready for query. Ask about methodology comparisons or system status.
             </Typography>
           )}
           {messages.map((msg, i) => (
-            <ListItem key={i} sx={{ 
+            <ListItem key={i} data-testid="chat-message" sx={{ 
               display: 'flex',
               justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
               px: 0,

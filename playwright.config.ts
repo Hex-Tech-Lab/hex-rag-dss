@@ -18,7 +18,7 @@ export default defineConfig({
     },
   ],
   webServer: process.env.PLAYWRIGHT_TEST_BASE_URL ? undefined : {
-    command: 'pnpm --filter web dev',
+    command: process.env.CI ? 'pnpm --filter web build && pnpm --filter web start' : 'pnpm --filter web dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },

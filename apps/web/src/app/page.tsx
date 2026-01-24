@@ -4,22 +4,23 @@ import ChatCommandCenter from '@/components/organisms/dashboard/ChatCommandCente
 import ComparisonPanel from '@/components/organisms/dashboard/ComparisonPanel';
 import { scrapePRData } from '@/lib/github/scraper';
 import DashboardLayout from '@/layouts/AdminLayout';
+import { ScraperFinding } from '@/types';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  let findings: any[] = [];
+  let findings: ScraperFinding[] = [];
   try {
     const auditPRs = [4, 3];
-    for (const pr of auditPRs) {
-      const data = await scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', pr);
-      findings = [...findings, ...data.findings];
-    }
+    const results = await Promise.all(
+      auditPRs.map(pr => scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', pr))
+    );
+    findings = results.flatMap(data => data.findings as ScraperFinding[]);
   } catch (error) {
     console.error('Failed to populate triage feed:', error);
     findings = [
-      { bucket: 'Remaining Risks', message: 'GitHub connectivity status: OFFLINE. Showing cached/mock findings.', tool: 'System' },
-      { bucket: 'Potential Blockers', message: 'Database RRF score column ambiguity resolved in migration #4.', tool: 'Audit' }
+      { bucket: 'Remaining Risks', message: 'GitHub connectivity status: OFFLINE. Showing cached/mock findings.', tool: 'System', type: 'infrastructure', severity: 'low' },
+      { bucket: 'Potential Blockers', message: 'Database RRF score column ambiguity resolved in migration #4.', tool: 'Audit', type: 'performance', severity: 'medium' }
     ];
   }
 

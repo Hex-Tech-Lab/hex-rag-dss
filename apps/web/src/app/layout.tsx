@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ConfigProvider } from "@/contexts/ConfigContext";
 import ThemeCustomization from "@/theme";
 import "./globals.css";
@@ -21,6 +22,7 @@ export default function RootLayout({
             {children}
           </ThemeCustomization>
         </ConfigProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

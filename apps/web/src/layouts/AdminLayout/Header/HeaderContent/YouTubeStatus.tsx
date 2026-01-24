@@ -3,13 +3,18 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Tooltip, Stack } from '@mui/material';
 import { CheckCircle, YoutubeLogo } from '@phosphor-icons/react';
-import { createBrowserClient } from '@/lib/supabase';
+import { createBrowserClient } from '@supabase/ssr';
+import { env } from '@/lib/env';
 import ConnectYouTubeButton from '@/components/atoms/ConnectYouTubeButton';
 
 export default function YouTubeStatus() {
   const [isConnected, setIsConnected] = useState(false);
   const [loading, setLoading] = useState(true);
-  const supabase = createBrowserClient();
+  
+  const supabase = createBrowserClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
   useEffect(() => {
     async function checkStatus() {
