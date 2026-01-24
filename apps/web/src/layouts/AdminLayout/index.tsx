@@ -8,7 +8,6 @@ import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
 
 // @project
 // @ts-expect-error - legacy SaasAble component
@@ -35,16 +34,15 @@ interface Props {
 /***************************  ADMIN LAYOUT  ***************************/
 
 export default function DashboardLayout({ children }: Props) {
-  const theme = useTheme();
-  const { menuMasterLoading } = useGetMenuMaster();
-  const { isLeftPinned, themeDirection } = useConfig();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { menuMaster, menuMasterLoading } = useGetMenuMaster();
+  const { themeDirection } = useConfig();
+  const drawerOpen = menuMaster.isDashboardDrawerOpened;
+  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('md'));
+  const downXL = useMediaQuery((theme: any) => theme.breakpoints.down('xl'));
 
   useEffect(() => {
-    if (!isMobile) {
-      handlerDrawerOpen(isLeftPinned);
-    }
-  }, [isLeftPinned, isMobile]);
+    handlerDrawerOpen(!downXL);
+  }, [downXL]);
 
   if (menuMasterLoading) return <Loader />;
 
@@ -56,12 +54,12 @@ export default function DashboardLayout({ children }: Props) {
       <Box 
         component="main" 
         sx={{ 
-          width: isMobile ? '100%' : `calc(100% - ${isLeftPinned ? DRAWER_WIDTH : 0}px)`, 
+          width: isMobile ? '100%' : `calc(100% - ${drawerOpen ? DRAWER_WIDTH : 0}px)`, 
           flexGrow: 1, 
           p: { xs: 2, sm: 3 },
           minHeight: '100vh',
           bgcolor: 'grey.50',
-          transition: theme.transitions.create('width', {
+          transition: (theme) => theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),

@@ -44,10 +44,9 @@ export default function Header() {
         aria-label="open drawer"
         onClick={() => handlerDrawerOpen(!drawerOpen)}
         size="small"
+        color="secondary"
+        variant="outlined"
         sx={{ 
-          color: 'text.primary', 
-          bgcolor: 'grey.100',
-          borderRadius: 1,
           display: { xs: 'inline-flex', lg: !drawerOpen ? 'inline-flex' : 'none' }, 
           mr: 2 
         }}
