@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   productionBrowserSourceMaps: false, // Reduce memory usage during build
+  serverExternalPackages: [
+    'googleapis',
+    'youtube-transcript',
+    'youtube-captions-scraper'
+  ],
   experimental: {
     optimizePackageImports: [
       '@mui/material',

@@ -22,6 +22,7 @@
 - **Selector Stability**: Injected `data-testid` attributes for resilient E2E testing.
 - **CI Sync**: Updated Playwright configuration to detect and branch for CI build/start cycles.
 
-### 5. Deployment
-- **Target**: Frankfurt (FRA1).
-- **Latency**: Sub-2s RAG response verification complete.
+### 6. Architectural Verification (Fetch MCP Audit)
+- **Vercel**: Confirmed `rootDirectory` must be managed via Project Settings/API; removed invalid property from `vercel.json` to prevent schema validation errors.
+- **Next.js 15**: Verified `serverExternalPackages` as the stable standard for offloading heavy Node.js-only modules (`googleapis`, `youtube-transcript`) from the build bundle, directly mitigating OOM risk.
+- **Standards**: All build optimizations now align with the December 2025/January 2026 stable release standards for Next.js 15.1.
