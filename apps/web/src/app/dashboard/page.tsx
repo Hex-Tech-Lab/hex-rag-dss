@@ -1,105 +1,54 @@
-import { createClient } from '@/lib/supabase';
-import { Container, Typography, Grid, Paper, Box, Card, CardContent, Chip, Divider } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import TriageSidebar from '@/components/organisms/dashboard/TriageSidebar';
+import ChatCommandCenter from '@/components/organisms/dashboard/ChatCommandCenter';
+import ComparisonPanel from '@/components/organisms/dashboard/ComparisonPanel';
+import { scrapePRData } from '@/lib/github/scraper';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Three-Pane Intelligence Dashboard (Action 2.1)
+ */
 export default async function DashboardPage() {
-  const supabase = await createClient();
+  // 1. Scrape latest PR data for the Triage Feed
+  let findings: any[] = [];
+  try {
+    const auditPRs = [4, 3, 2, 1];
+    for (const prNum of auditPRs) {
+      try {
+        const data = await scrapePRData('Hex-Tech-Lab', 'hex-rag-dss', prNum);
+        findings = [...findings, ...data.findings];
+      } catch (e) {
+        // Individual PR scrape failure shouldn't crash the dashboard
+      }
+    }
+  } catch (error) {
+    console.error('Failed to populate triage feed:', error);
+  }
 
-  // 1. Fetch latest intelligence
-  const { data: intelligenceEntries } = await supabase
-    .from('video_intelligence')
-    .select('*, videos(title, youtube_id)')
-    .order('extracted_at', { ascending: false })
-    .limit(5);
-
-  // 2. Fetch finding counts (Mocked)
-  const stats = {
-    critical: 2,
-    highImpact: 5,
-    risks: 8
-  };
+  // Fallback findings if nothing could be scraped
+  if (findings.length === 0) {
+    findings = [
+      { bucket: 'Remaining Risks', message: 'GitHub audit feed initializing or rate-limited.', tool: 'System' }
+    ];
+  }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-        Intelligence Dashboard
-      </Typography>
-      <Typography variant="subtitle1" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
-        High-level summary of processed intelligence and system findings.
-      </Typography>
+    <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', overflow: 'hidden', bgcolor: '#f4f6f8' }}>
+      {/* Pane 1: Triage Feed (Left) */}
+      <Box sx={{ width: '320px', flexShrink: 0, bgcolor: 'white', borderRight: '1px solid', borderColor: 'divider' }}>
+        <TriageSidebar findings={findings} />
+      </Box>
 
-      {/* 3-Bucket Summary */}
-      <Grid container spacing={3} sx={{ mb: 6 }}>
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, textAlign: 'center', borderLeft: '6px solid', borderLeftColor: 'error.main' }}>
-            <Typography variant="h3" color="error" fontWeight="bold">{stats.critical}</Typography>
-            <Typography variant="h6">Critical Blockers</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, textAlign: 'center', borderLeft: '6px solid', borderLeftColor: 'secondary.main' }}>
-            <Typography variant="h3" color="secondary" fontWeight="bold">{stats.highImpact}</Typography>
-            <Typography variant="h6">High Impact Decisions</Typography>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, textAlign: 'center', borderLeft: '6px solid', borderLeftColor: 'warning.main' }}>
-            <Typography variant="h3" color="warning.main" fontWeight="bold">{stats.risks}</Typography>
-            <Typography variant="h6">Potential Risks</Typography>
-          </Paper>
-        </Grid>
-      </Grid>
+      {/* Pane 2: Command Center (Center) */}
+      <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', minWidth: '400px' }}>
+        <ChatCommandCenter />
+      </Box>
 
-      <Typography variant="h5" gutterBottom fontWeight="bold" sx={{ mb: 3 }}>
-        Latest Video Intelligence
-      </Typography>
-
-      <Grid container spacing={3}>
-        {intelligenceEntries?.map((entry: any) => {
-          const intel = entry.header_intelligence as any;
-          return (
-            <Grid item xs={12} key={entry.id}>
-              <Card variant="outlined" sx={{ borderRadius: 2 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                    <Box>
-                      <Typography variant="h6" fontWeight="bold">
-                        {entry.videos?.title || 'Untitled Video'}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Author: {intel?.author || 'Unknown'} | Extracted: {new Date(entry.extracted_at).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                    <Chip label="Processed" color="success" size="small" variant="outlined" />
-                  </Box>
-                  
-                  <Divider sx={{ my: 2 }} />
-                  
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 4 }}>
-                    <Box>
-                      <Typography variant="subtitle2" color="primary" fontWeight="bold" gutterBottom>
-                        Strategic Context
-                      </Typography>
-                      <Typography variant="body2">
-                        {entry.raw_extraction ? 'Extracted Context Available' : 'No context provided.'}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2" color="secondary" fontWeight="bold" gutterBottom>
-                        Executive Overview
-                      </Typography>
-                      <Typography variant="body2">
-                        {entry.executive_summary || 'No summary available.'}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </Container>
+      {/* Pane 3: Intelligence Matrix (Right) */}
+      <Box sx={{ width: '380px', flexShrink: 0, bgcolor: 'white', borderLeft: '1px solid', borderColor: 'divider' }}>
+        <ComparisonPanel />
+      </Box>
+    </Box>
   );
 }

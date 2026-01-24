@@ -8,7 +8,13 @@ import { IntelligenceOutput } from '@/lib/intelligence/types';
  * Processes a transcript through the 16-section prompt and triage.
  */
 export const extractIntelligence = async (transcript: string) => {
-  const prompt = ULTIMATE_INTELLIGENCE_PROMPT.replace('{{transcript}}', transcript);
+  // High Impact: Safeguard (Truncate to 40000 chars for large transcripts)
+  let safeTranscript = transcript;
+  if (safeTranscript.length > 40000) {
+    safeTranscript = safeTranscript.substring(0, 40000) + '... [Transcript Truncated]';
+  }
+
+  const prompt = ULTIMATE_INTELLIGENCE_PROMPT.replace('{{transcript}}', safeTranscript);
   const systemPrompt = "You are an expert intelligence analyst specializing in technical content extraction.";
 
   const rawResponse = await callLLM(prompt, systemPrompt);

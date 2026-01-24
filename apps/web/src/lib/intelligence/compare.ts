@@ -52,11 +52,17 @@ export const generateComparisonMatrix = async (alternativeA: string, alternative
 
   const context = (matches || []).map((m: { content: string }) => m.content).join('\n---\n');
 
+  // High Impact: RAG Context Safeguard (Truncate to 4000 chars)
+  let safeContext = context;
+  if (safeContext.length > 4000) {
+    safeContext = safeContext.substring(0, 4000) + '... [Context Truncated]';
+  }
+
   // 2. Build and run the comparison prompt
   const prompt = COMPARISON_MATRIX_PROMPT
     .replace('{{alternativeA}}', alternativeA)
     .replace('{{alternativeB}}', alternativeB)
-    .replace('{{context}}', context);
+    .replace('{{context}}', safeContext);
 
   const systemPrompt = "You are an elite architectural consultant helping a user make high-stakes technical decisions.";
 

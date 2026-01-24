@@ -7,6 +7,7 @@ const envSchema = z.object({
   YOUTUBE_CLIENT_SECRET: z.string().min(1),
   YOUTUBE_REDIRECT_URI: z.string().url(),
   OPENROUTER_API_KEY: z.string().min(1),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse({
@@ -16,6 +17,7 @@ const parsed = envSchema.safeParse({
   YOUTUBE_CLIENT_SECRET: process.env.YOUTUBE_CLIENT_SECRET,
   YOUTUBE_REDIRECT_URI: process.env.YOUTUBE_REDIRECT_URI,
   OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 });
 
 if (!parsed.success) {

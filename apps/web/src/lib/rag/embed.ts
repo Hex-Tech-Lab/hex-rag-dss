@@ -14,10 +14,17 @@ export const generateEmbedding = async (text: string) => {
     },
     body: JSON.stringify({
       model: model,
-      input: text.replace(/\n/g, ' ')
+      input: text.replace(/\n/g, ' '),
+      dimensions: 1024
     })
   });
 
   const data = await response.json();
+  
+  if (!response.ok || !data.data || !data.data[0]) {
+    console.error('OpenRouter Embedding Error:', data);
+    throw new Error(`Embedding generation failed: ${data.error?.message || 'Unknown error'}`);
+  }
+
   return data.data[0].embedding;
 };

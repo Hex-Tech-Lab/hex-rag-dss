@@ -48,8 +48,12 @@ export async function askQuestion(query: string) {
 
     const response = await callLLM(prompt, systemPrompt);
     return { content: response };
-  } catch (error) {
-    console.error('Chat Action Error:', error);
-    return { error: 'Failed to retrieve data from the intelligence pipeline.' };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Chat Action Error:', err);
+    return { 
+      error: 'Failed to retrieve data from the intelligence pipeline.',
+      details: message
+    };
   }
 }

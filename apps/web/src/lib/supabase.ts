@@ -1,4 +1,5 @@
 import { createBrowserClient as createSupabaseBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { env } from '@/lib/env'
 
 /**
@@ -10,6 +11,20 @@ export const createBrowserClient = () =>
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   )
+
+/**
+ * Service-side Supabase client for background tasks and scripts.
+ * Uses Service Role key - BYPASSES RLS.
+ */
+export const createServiceClient = () => {
+  if (!env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for service client');
+  }
+  return createSupabaseClient(
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.SUPABASE_SERVICE_ROLE_KEY
+  )
+}
 
 /**
  * Server-side Supabase client factory.

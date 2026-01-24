@@ -26,5 +26,13 @@ export const callLLM = async (prompt: string, systemPrompt: string = "") => {
   });
 
   const data = await response.json();
+  if (data.error) {
+    console.error('OpenRouter API Error:', data.error);
+    throw new Error(`OpenRouter API Error: ${data.error.message || JSON.stringify(data.error)}`);
+  }
+  if (!data.choices || data.choices.length === 0) {
+    console.error('OpenRouter No Choices:', data);
+    throw new Error('OpenRouter returned no choices');
+  }
   return data.choices[0].message.content;
 };

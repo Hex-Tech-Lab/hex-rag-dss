@@ -58,17 +58,23 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
     comments.forEach((comment: { body: string }) => {
       const body = comment.body.toLowerCase();
       
-      // Evaluation in priority order to emit at most one finding per comment
-      if (body.includes('coderabbit') || body.includes('review')) {
-        const type = body.includes('security') ? 'security' : 'code_quality';
+      // One finding per comment using priority order: 
+      // Critical > High Impact > Potential Blockers > Remaining Risks.
+      
+      // 1. Critical
+      if (body.includes('critical error') || body.includes('security vulnerability') || body.includes('exploit')) {
         findings.push({
-          bucket: classifyBucket(type, 'medium', comment.body),
-          type,
+          bucket: 'Critical',
+          type: 'security',
           tool: 'coderabbit',
           message: comment.body,
-          severity: 'medium'
+          severity: 'critical'
         });
-      } else if (body.includes('triage') || body.includes('hybrid search') || body.includes('ranking')) {
+        return;
+      }
+
+      // 2. High Impact
+      if (body.includes('high impact') || body.includes('logic gap') || body.includes('triage') || body.includes('hybrid search') || body.includes('ranking')) {
         findings.push({
           bucket: 'High Impact',
           type: 'logic',
@@ -76,7 +82,11 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
           message: comment.body,
           severity: 'high'
         });
-      } else if (body.includes('vercel') || body.includes('supabase') || body.includes('.env') || body.includes('desync')) {
+        return;
+      }
+
+      // 3. Potential Blockers
+      if (body.includes('block') || body.includes('fail') || body.includes('vercel') || body.includes('supabase') || body.includes('.env') || body.includes('desync')) {
         findings.push({
           bucket: 'Potential Blockers',
           type: 'infrastructure',
@@ -84,7 +94,17 @@ export async function scrapePRData(owner: string, repo: string, prNumber: number
           message: comment.body,
           severity: 'medium'
         });
+        return;
       }
+
+      // 4. Remaining Risks
+      findings.push({
+        bucket: 'Remaining Risks',
+        type: 'code_quality',
+        tool: 'coderabbit',
+        message: comment.body,
+        severity: 'medium'
+      });
     });
   }
 
