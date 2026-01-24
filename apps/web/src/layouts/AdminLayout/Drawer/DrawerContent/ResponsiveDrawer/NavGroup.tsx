@@ -1,16 +1,26 @@
-import PropTypes from 'prop-types';
+'use client';
+
 // @mui
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import NavCollapse from './NavCollapse';
+// @ts-expect-error - legacy SaasAble component
 import NavItem from './NavItem';
+import { NavItem as NavItemType } from '@/types/menu';
+
+/***************************  RESPONSIVE DRAWER - GROUP - TYPES  ***************************/
+
+interface Props {
+  item: NavItemType;
+}
 
 /***************************  RESPONSIVE DRAWER - GROUP  ***************************/
 
-export default function NavGroup({ item }) {
-  const renderNavItem = (menuItem) => {
+export default function NavGroup({ item }: Props) {
+  const renderNavItem = (menuItem: NavItemType) => {
     // Render items based on the type
     switch (menuItem.type) {
       case 'collapse':
@@ -30,15 +40,15 @@ export default function NavGroup({ item }) {
     <List
       component="div"
       subheader={
-        <Typography component="div" variant="caption" sx={{ mb: 0.75, color: 'grey.700' }}>
-          {item.title}
-        </Typography>
+        item.title && (
+          <Typography component="div" variant="caption" sx={{ mb: 0.75, color: 'grey.700', px: 2 }}>
+            {item.title}
+          </Typography>
+        )
       }
-      sx={{ '&:not(:first-of-type)': { pt: 1, borderTop: '1px solid', borderColor: 'divider' } }}
+      sx={{ '&:not(:first-of-type)': { pt: 1, borderTop: '1px solid', borderColor: 'divider' }, px: 0 }}
     >
       {item.children?.map((menuItem) => renderNavItem(menuItem))}
     </List>
   );
 }
-
-NavGroup.propTypes = { item: PropTypes.any };

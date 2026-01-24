@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -26,7 +26,9 @@ import { enqueueSnackbar } from 'notistack';
 // @project
 import { ThemeI18n } from '@/config';
 import MainCard from '@/components/MainCard';
+// @ts-expect-error - legacy SaasAble component
 import Profile from '@/components/Profile';
+// @ts-expect-error - legacy SaasAble component
 import { AvatarSize, ChipIconPosition } from '@/enum';
 import useConfig from '@/hooks/useConfig';
 
@@ -36,7 +38,7 @@ import { IconChevronRight, IconLanguage, IconLogout, IconSettings, IconTextDirec
 /***************************  HEADER - PROFILE DATA  ***************************/
 
 const profileData = {
-  avatar: { src: '/assets/images/users/avatar-1.png', size: AvatarSize.XS },
+  avatar: { src: '/assets/images/users/avatar-1.png', size: 'xs' }, // size will be mapped in Profile comp
   title: 'Erika Collins',
   caption: 'Super Admin'
 };
@@ -56,8 +58,8 @@ export default function ProfileSection() {
     state: { i18n }
   } = useConfig();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [innerAnchorEl, setInnerAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [innerAnchorEl, setInnerAnchorEl] = useState<null | HTMLElement>(null);
 
   const open = Boolean(anchorEl);
   const innerOpen = Boolean(innerAnchorEl);
@@ -65,11 +67,11 @@ export default function ProfileSection() {
   const innerId = innerOpen ? 'profile-inner-popper' : undefined;
   const buttonStyle = { borderRadius: 2, p: 1 };
 
-  const handleActionClick = (event) => {
+  const handleActionClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleInnerActionClick = (event) => {
+  const handleInnerActionClick = (event: MouseEvent<HTMLElement>) => {
     setInnerAnchorEl(innerAnchorEl ? null : event.currentTarget);
   };
 
@@ -77,7 +79,7 @@ export default function ProfileSection() {
     setAnchorEl(null);
   };
 
-  const i18nHandler = (event, key) => {
+  const i18nHandler = (event: MouseEvent<HTMLElement>, key: ThemeI18n) => {
     handleInnerActionClick(event);
     if (key != i18n) enqueueSnackbar('Upgrade to pro for language change');
   };
@@ -98,11 +100,18 @@ export default function ProfileSection() {
         open={open}
         anchorEl={anchorEl}
         transition
-        popperOptions={{ modifiers: [{ name: 'offset', options: { offset: [8, 8] } }] }}
       >
         {({ TransitionProps }) => (
           <Fade in={open} {...TransitionProps}>
-            <MainCard sx={{ borderRadius: 2, boxShadow: theme.vars.customShadows.tooltip, minWidth: 220, p: 0.5 }}>
+            <MainCard 
+              sx={{ 
+                borderRadius: 2, 
+                // @ts-expect-error - legacy SaasAble component
+                boxShadow: theme.customShadows?.tooltip || theme.shadows[8], 
+                minWidth: 220, 
+                p: 0.5 
+              }}
+            >
               <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
                 <Stack sx={{ px: 0.5, py: 0.75 }}>
                   <Profile
@@ -137,6 +146,7 @@ export default function ProfileSection() {
                         size="small"
                         color="secondary"
                         icon={<IconChevronRight size={16} />}
+                        // @ts-expect-error - legacy SaasAble component
                         position={ChipIconPosition.RIGHT}
                         sx={{ textTransform: 'capitalize' }}
                       />
@@ -146,21 +156,18 @@ export default function ProfileSection() {
                         open={innerOpen}
                         anchorEl={innerAnchorEl}
                         transition
-                        popperOptions={{
-                          modifiers: [
-                            {
-                              name: 'preventOverflow',
-                              options: {
-                                boundary: 'clippingParents'
-                              }
-                            },
-                            { name: 'offset', options: { offset: [0, 8] } }
-                          ]
-                        }}
                       >
                         {({ TransitionProps }) => (
                           <Fade in={innerOpen} {...TransitionProps}>
-                            <MainCard sx={{ borderRadius: 2, boxShadow: theme.vars.customShadows.tooltip, minWidth: 150, p: 0.5 }}>
+                            <MainCard 
+                              sx={{ 
+                                borderRadius: 2, 
+                                // @ts-expect-error - legacy SaasAble component
+                                boxShadow: theme.customShadows?.tooltip || theme.shadows[8], 
+                                minWidth: 150, 
+                                p: 0.5 
+                              }}
+                            >
                               <ClickAwayListener onClickAway={() => setInnerAnchorEl(null)}>
                                 <List disablePadding>
                                   {languageList.map((item, index) => (

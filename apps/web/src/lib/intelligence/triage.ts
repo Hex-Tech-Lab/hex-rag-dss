@@ -1,11 +1,23 @@
 import { IntelligenceOutput } from '@/lib/intelligence/types';
 
+export interface TriageActionItem {
+  type: string;
+  content: string;
+  priority: 'HIGH' | 'MEDIUM' | 'LOW';
+}
+
+export interface TriageResult {
+  actionItems: TriageActionItem[];
+  constraints: IntelligenceOutput['entity_database'];
+  readyForDecision: boolean;
+}
+
 /**
  * The Triage Agent identifies "Decision Points" from the 16-section output.
  * It looks for high-priority insights and scenario analysis.
  */
-export async function triageIntelligence(content: IntelligenceOutput) {
-    const actionItems = [];
+export async function triageIntelligence(content: IntelligenceOutput): Promise<TriageResult> {
+    const actionItems: TriageActionItem[] = [];
 
     // Logic: If Scenario Analysis contains "Risk", promote to Triage
     if (content.scenario_analysis?.toLowerCase().includes('risk') || content.risk_disclosures) {

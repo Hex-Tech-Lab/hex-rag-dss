@@ -10,9 +10,10 @@ export interface CustomShadowProps {
   focus: string;
 }
 
-export default function CustomShadows(palette: any): CustomShadowProps {
-  const shadowColor = palette.text.primary;
-  const primaryColor = palette.primary.main;
+export default function CustomShadows(palette: unknown): CustomShadowProps {
+  const p = palette as { text: { primary: string }; primary: { main: string } };
+  const shadowColor = p.text.primary;
+  const primaryColor = p.primary.main;
 
   return {
     button: `0px 0.711px 1.422px 0px ${withAlpha(shadowColor, 0.05)}`,

@@ -3,9 +3,9 @@
  * Ported from hex-test-drive-man and refactored for hex-rag-dss MCPs.
  * 4-Bucket Standard: Critical, High Impact, Potential Blockers, Remaining Risks.
  */
-// @ts-expect-error - Conceptual wrappers
+// @ts-expect-error - legacy SaasAble component - Conceptual wrappers
 import { github_pull_request_read } from '@/lib/mcp-wrappers'; 
-// @ts-expect-error - Conceptual wrappers
+// @ts-expect-error - legacy SaasAble component - Conceptual wrappers
 import { sonarcloud_issues } from '@/lib/mcp-wrappers';
 
 type Bucket = 'Critical' | 'High Impact' | 'Potential Blockers' | 'Remaining Risks';

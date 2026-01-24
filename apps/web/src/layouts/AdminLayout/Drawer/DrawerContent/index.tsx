@@ -1,19 +1,26 @@
 'use client';
+
+// @mui
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Stack from '@mui/material/Stack';
+import { useTheme } from '@mui/material/styles';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import NavCard from './NavCard';
+// @ts-expect-error - legacy SaasAble component
 import ResponsiveDrawer from './ResponsiveDrawer';
 
 import { useGetMenuMaster } from '@/states/menu';
 import { MINI_DRAWER_WIDTH } from '@/config';
+// @ts-expect-error - legacy SaasAble component
 import SimpleBar from '@/components/third-party/SimpleBar';
 
 /***************************  DRAWER - CONTENT  ***************************/
 
 export default function DrawerContent() {
-  const upMD = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const theme = useTheme();
+  const upMD = useMediaQuery(theme.breakpoints.up('lg'));
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;

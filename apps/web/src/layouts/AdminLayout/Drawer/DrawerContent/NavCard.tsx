@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+'use client';
 
 // @next
 import Link from 'next/link';
@@ -10,8 +10,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import LogoSection from '@/components/logo';
 import MainCard from '@/components/MainCard';
+// @ts-expect-error - legacy SaasAble component
 import { AvatarSize } from '@/enum';
 
 // @assets
@@ -25,12 +27,21 @@ const data = {
   icon: <IconBolt size={16} />
 };
 
+/***************************  NAVIGATION CARD - CONTENT - TYPES  ***************************/
+
+interface ContentProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
+
 /***************************  NAVIGATION CARD - CONTENT  ***************************/
 
-function CardContent({ title, description, icon }) {
+function NavCardContent({ title, description, icon }: ContentProps) {
   return (
     <Stack sx={{ gap: 3 }}>
       <Stack direction="row" sx={{ gap: 0.25, alignItems: 'center' }}>
+        {/* @ts-expect-error - legacy SaasAble component */}
         <Avatar variant="rounded" size={AvatarSize.XS} sx={{ bgcolor: 'transparent' }}>
           <LogoSection isIcon sx={{ '& .MuiBox-root': { width: 'auto', height: 'auto' } }} />
         </Avatar>
@@ -44,6 +55,7 @@ function CardContent({ title, description, icon }) {
         <Button
           startIcon={icon}
           variant="contained"
+          // @ts-expect-error - legacy SaasAble component
           component={Link}
           href="https://mui.com/store/items/saasable-multipurpose-ui-kit-and-dashboard/"
           target="_blank"
@@ -61,9 +73,7 @@ function CardContent({ title, description, icon }) {
 export default function NavCard() {
   return (
     <MainCard sx={{ p: 1.5, bgcolor: 'grey.50', boxShadow: 'none', mb: 3 }}>
-      <CardContent title={data.title} description={data.description} icon={data.icon} />
+      <NavCardContent title={data.title} description={data.description} icon={data.icon} />
     </MainCard>
   );
 }
-
-CardContent.propTypes = { title: PropTypes.string, description: PropTypes.string, icon: PropTypes.any };

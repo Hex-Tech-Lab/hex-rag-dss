@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, Fragment, useState } from 'react';
+import { Fragment, useState, MouseEvent } from 'react';
 
 // @mui
 import { keyframes, useTheme } from '@mui/material/styles';
@@ -21,39 +21,43 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import EmptyNotification from '@/components/header/empty-state/EmptyNotification';
 import MainCard from '@/components/MainCard';
+// @ts-expect-error - legacy SaasAble component
 import NotificationItem from '@/components/NotificationItem';
+// @ts-expect-error - legacy SaasAble component
 import SimpleBar from '@/components/third-party/SimpleBar';
 
 // @assets
 import { IconBell, IconCode, IconChevronDown, IconGitBranch, IconNote, IconGps } from '@tabler/icons-react';
 
 const swing = keyframes`
-  20% {
-    transform: rotate(15deg) scale(1);
-}
-40% {
-    transform: rotate(-10deg) scale(1.05);
-}
-60% {
-    transform: rotate(5deg) scale(1.1);
-}
-80% {
-    transform: rotate(-5deg) scale(1.05);
-}
-100% {
-    transform: rotate(0deg) scale(1);
-}
+  20% { transform: rotate(15deg) scale(1); }
+  40% { transform: rotate(-10deg) scale(1.05); }
+  60% { transform: rotate(5deg) scale(1.1); }
+  80% { transform: rotate(-5deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
 `;
+
+/***************************  HEADER - NOTIFICATION - TYPES  ***************************/
+
+interface NotificationData {
+  avatar: any;
+  badge?: React.ReactNode;
+  title: string;
+  subTitle: string;
+  dateTime: string;
+  isSeen?: boolean;
+}
 
 /***************************  HEADER - NOTIFICATION  ***************************/
 
 export default function Notification() {
   const theme = useTheme();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [innerAnchorEl, setInnerAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [innerAnchorEl, setInnerAnchorEl] = useState<null | HTMLElement>(null);
   const [allRead, setAllRead] = useState(false);
   const [showEmpty, setShowEmpty] = useState(false);
 
@@ -65,7 +69,7 @@ export default function Notification() {
 
   const listcontent = ['All notification', 'Users', 'Account', 'Language', 'Role & Permission', 'Setting'];
 
-  const [notifications, setNotifications] = useState([
+  const [notifications, setNotifications] = useState<NotificationData[]>([
     {
       avatar: { alt: 'Travis Howard', src: '/assets/images/users/avatar-1.png' },
       badge: <IconCode size={14} />,
@@ -85,51 +89,14 @@ export default function Notification() {
       title: 'Pull Request Opened "fix-dashboard-bug"',
       subTitle: 'Sophia Green',
       dateTime: 'Jul 11'
-    },
-    {
-      avatar: { alt: 'Travis Howard', src: '/assets/images/users/avatar-4.png' },
-      badge: <IconNote size={14} />,
-      title: 'Admin Approval · Document Submission Accepted',
-      subTitle: 'Salvatore Bogan',
-      dateTime: 'Jul 15',
-      isSeen: true
-    },
-    {
-      avatar: <IconGps />,
-      title: 'Location Access Request, Pending Your Approval',
-      subTitle: 'System Notification',
-      dateTime: 'Jul 24',
-      isSeen: true
     }
   ]);
 
-  const [notifications2, setNotifications2] = useState([
+  const [notifications2, setNotifications2] = useState<NotificationData[]>([
     {
       avatar: { alt: 'Travis Howard', src: '/assets/images/users/avatar-1.png' },
       badge: <IconCode size={14} />,
       title: 'Code Review Requested · Feature Deployment',
-      subTitle: 'Brenda Skiles',
-      dateTime: 'Jul 9'
-    },
-    {
-      avatar: <IconGps />,
-      title: 'Location Access Granted [Security Update]',
-      subTitle: 'System Notification',
-      dateTime: 'Jul 24',
-      isSeen: true
-    },
-    {
-      avatar: { alt: 'Alice Smith', src: '/assets/images/users/avatar-5.png' },
-      badge: <IconNote size={14} />,
-      title: 'Document Submission Approval Received',
-      subTitle: 'Salvatore Bogan',
-      dateTime: 'Aug 12',
-      isSeen: true
-    },
-    {
-      avatar: { alt: 'Travis Howard', src: '/assets/images/users/avatar-1.png' },
-      badge: <IconCode size={14} />,
-      title: 'New Commit Pushed · Review Changes',
       subTitle: 'Brenda Skiles',
       dateTime: 'Jul 9'
     },
@@ -141,43 +108,45 @@ export default function Notification() {
     }
   ]);
 
-  const handleActionClick = (event) => {
+  const handleActionClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
-  const handleInnerActionClick = (event) => {
+  const handleInnerActionClick = (event: MouseEvent<HTMLElement>) => {
     setInnerAnchorEl(innerAnchorEl ? null : event.currentTarget);
   };
 
-  // Function to mark all notifications as read
   const handleMarkAllAsRead = () => {
-    setNotifications((prevNotifications) => prevNotifications.map((notification) => ({ ...notification, isSeen: true })));
-    setNotifications2((prevNotifications2) => prevNotifications2.map((notification) => ({ ...notification, isSeen: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, isSeen: true })));
+    setNotifications2((prev) => prev.map((n) => ({ ...n, isSeen: true })));
     setAllRead(true);
   };
 
   const handleClearAll = () => {
     setNotifications([]);
     setNotifications2([]);
-    setShowEmpty(true); // Set empty state to true when cleared
+    setShowEmpty(true);
   };
 
   return (
     <>
       <IconButton
-        variant="outlined"
         color="secondary"
         size="small"
         onClick={handleActionClick}
         aria-label="show notifications"
-        {...(notifications.length !== 0 && !allRead && { sx: { '& svg': { animation: `${swing} 1s ease infinite` } } })}
+        sx={{ 
+          border: '1px solid', 
+          borderColor: 'divider',
+          ...(notifications.length !== 0 && !allRead && { '& svg': { animation: `${swing} 1s ease infinite` } })
+        }}
       >
         <Badge
           color="error"
           variant="dot"
           invisible={allRead || notifications.length === 0}
           slotProps={{
-            badge: { sx: { height: 6, minWidth: 6, top: 4, right: 4, border: `1px solid ${theme.vars.palette.background.default}` } }
+            badge: { sx: { height: 6, minWidth: 6, top: 4, right: 4, border: `1px solid ${theme.palette.background.default}` } }
           }}
         >
           <IconBell size={16} />
@@ -188,9 +157,6 @@ export default function Notification() {
         id={id}
         open={open}
         anchorEl={anchorEl}
-        popperOptions={{
-          modifiers: [{ name: 'offset', options: { offset: [0, 8] } }]
-        }}
         transition
       >
         {({ TransitionProps }) => (
@@ -198,7 +164,8 @@ export default function Notification() {
             <MainCard
               sx={{
                 borderRadius: 2,
-                boxShadow: theme.vars.customShadows.tooltip,
+                // @ts-expect-error - legacy SaasAble component
+                boxShadow: theme.customShadows?.tooltip || theme.shadows[1],
                 width: 1,
                 minWidth: { xs: 352, sm: 240 },
                 maxWidth: { xs: 352, md: 420 },
@@ -206,7 +173,7 @@ export default function Notification() {
               }}
             >
               <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-                <Box>
+                <div>
                   <CardHeader
                     sx={{ p: 1 }}
                     title={
@@ -226,15 +193,14 @@ export default function Notification() {
                           open={innerOpen}
                           anchorEl={innerAnchorEl}
                           transition
-                          popperOptions={{ modifiers: [{ name: 'preventOverflow', options: { boundary: 'clippingParents' } }] }}
                         >
                           {({ TransitionProps }) => (
                             <Fade in={innerOpen} {...TransitionProps}>
-                              <MainCard sx={{ borderRadius: 2, boxShadow: theme.vars.customShadows.tooltip, minWidth: 156, p: 0.5 }}>
+                              <MainCard sx={{ borderRadius: 2, boxShadow: theme.shadows[8], minWidth: 156, p: 0.5 }}>
                                 <ClickAwayListener onClickAway={() => setInnerAnchorEl(null)}>
                                   <List disablePadding>
                                     {listcontent.map((item, index) => (
-                                      <ListItemButton key={index} sx={buttonStyle} onClick={handleInnerActionClick}>
+                                      <ListItemButton key={index} sx={buttonStyle} onClick={() => setInnerAnchorEl(null)}>
                                         <ListItemText>{item}</ListItemText>
                                       </ListItemButton>
                                     ))}
@@ -244,11 +210,11 @@ export default function Notification() {
                             </Fade>
                           )}
                         </Popper>
-                        <Activity mode={!showEmpty ? 'visible' : 'hidden'}>
+                        {!showEmpty && (
                           <Button color="primary" size="small" onClick={handleMarkAllAsRead} disabled={allRead}>
                             Mark All as Read
                           </Button>
-                        </Activity>
+                        )}
                       </Stack>
                     }
                   />
@@ -302,7 +268,7 @@ export default function Notification() {
                       </CardActions>
                     </Fragment>
                   )}
-                </Box>
+                </div>
               </ClickAwayListener>
             </MainCard>
           </Fade>

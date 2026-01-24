@@ -11,11 +11,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 
 // @project
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import AppBarStyled from './AppBarStyled';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import HeaderContent from './HeaderContent';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { DRAWER_WIDTH } from '@/config';
 

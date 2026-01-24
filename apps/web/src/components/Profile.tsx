@@ -1,15 +1,41 @@
-import PropTypes from 'prop-types';
+'use client';
+
+import { ReactNode } from 'react';
+
 // @mui
-import Avatar from '@mui/material/Avatar';
+import Avatar, { AvatarProps } from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import Typography, { TypographyProps } from '@mui/material/Typography';
+import { SxProps, Theme } from '@mui/material/styles';
 
 // @icons
 import { IconPhoto } from '@tabler/icons-react';
 
+/***************************  PROFILE - TYPES  ***************************/
+
+interface Props {
+  avatar?: AvatarProps;
+  title: string;
+  caption?: string;
+  label?: ReactNode;
+  sx?: SxProps<Theme>;
+  titleProps?: TypographyProps;
+  captionProps?: TypographyProps;
+  placeholderIfEmpty?: boolean;
+}
+
 /***************************  PROFILE  ***************************/
 
-export default function Profile({ avatar, title, caption, label, sx, titleProps, captionProps, placeholderIfEmpty }) {
+export default function Profile({ 
+  avatar, 
+  title, 
+  caption, 
+  label, 
+  sx, 
+  titleProps, 
+  captionProps, 
+  placeholderIfEmpty 
+}: Props) {
   return (
     <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', gap: 0.75, width: 'fit-content', ...sx }}>
       {(avatar?.src || placeholderIfEmpty) && (
@@ -35,14 +61,3 @@ export default function Profile({ avatar, title, caption, label, sx, titleProps,
     </Stack>
   );
 }
-
-Profile.propTypes = {
-  avatar: PropTypes.any,
-  title: PropTypes.any,
-  caption: PropTypes.any,
-  label: PropTypes.any,
-  sx: PropTypes.any,
-  titleProps: PropTypes.any,
-  captionProps: PropTypes.any,
-  placeholderIfEmpty: PropTypes.any
-};

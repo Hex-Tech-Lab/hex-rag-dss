@@ -11,15 +11,15 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
 // @project
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Drawer from './Drawer';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Header from './Header';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Breadcrumbs from '@/components/@extended/Breadcrumbs';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Loader from '@/components/Loader';
 
 import { DRAWER_WIDTH } from '@/config';

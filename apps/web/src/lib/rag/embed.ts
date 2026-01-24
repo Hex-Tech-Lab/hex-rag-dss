@@ -2,7 +2,7 @@
  * OpenRouter Embedding Client (Action 9.1)
  * Requirement: Generate 1024-dim embeddings.
  */
-export const generateEmbedding = async (text: string) => {
+export const generateEmbedding = async (text: string): Promise<number[]> => {
   const apiKey = process.env.OPENROUTER_API_KEY;
   const model = "openai/text-embedding-3-large"; // 1024 dimensions
 

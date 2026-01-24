@@ -28,7 +28,7 @@ export default function useLocalStorage<T>(key: string, defaultValue: T) {
   }, [key, state]);
 
   // Update single field
-  const setField = useCallback((field: keyof T, value: any) => {
+  const setField = useCallback((field: keyof T, value: unknown) => {
     setState((prev) => ({
       ...prev,
       [field]: value

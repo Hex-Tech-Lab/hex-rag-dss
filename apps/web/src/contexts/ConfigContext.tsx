@@ -11,7 +11,7 @@ import useLocalStorage from '@/hooks/useLocalStorage';
 export interface ConfigContextValue {
   state: Config;
   setState: (state: Config) => void;
-  setField: (field: keyof Config, value: any) => void;
+  setField: (field: keyof Config, value: unknown) => void;
   resetState: () => void;
 }
 

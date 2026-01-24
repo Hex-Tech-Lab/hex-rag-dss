@@ -5,15 +5,15 @@ import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
 // @project
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Notification from './Notification';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Profile from './Profile';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import SearchBar from './SearchBar';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import Breadcrumbs from '@/components/@extended/Breadcrumbs';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import ThemeModeSwitcher from './ThemeModeSwitcher';
 import YouTubeStatus from './YouTubeStatus';
 

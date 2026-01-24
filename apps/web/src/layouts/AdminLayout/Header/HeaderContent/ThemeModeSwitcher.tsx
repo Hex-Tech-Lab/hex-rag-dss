@@ -1,3 +1,5 @@
+'use client';
+
 // @mui
 import IconButton from '@mui/material/IconButton';
 
@@ -17,7 +19,13 @@ export default function ThemeModeSwitcher() {
   };
 
   return (
-    <IconButton variant="outlined" color="secondary" size="small" onClick={handleClick} aria-label="show theme mode">
+    <IconButton 
+      color="secondary" 
+      size="small" 
+      onClick={handleClick} 
+      aria-label="show theme mode"
+      sx={{ border: '1px solid', borderColor: 'divider' }}
+    >
       <IconSun size={16} />
     </IconButton>
   );

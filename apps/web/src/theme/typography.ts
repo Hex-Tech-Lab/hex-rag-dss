@@ -9,7 +9,7 @@ import { FONT_ARCHIVO } from '@/config';
 export default function typography(): TypographyOptions {
   return {
     fontFamily: FONT_ARCHIVO,
-    // @ts-expect-error
+    // @ts-expect-error - legacy SaasAble component
     letterSpacing: 0,
 
     // heading - h1

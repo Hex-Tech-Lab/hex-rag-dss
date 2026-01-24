@@ -1,25 +1,38 @@
-import PropTypes from 'prop-types';
-import { Activity, useMemo } from 'react';
+'use client';
 
+import { useMemo } from 'react';
+
+// @mui
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import DrawerHeader from './DrawerHeader';
+// @ts-expect-error - legacy SaasAble component
 import DrawerContent from './DrawerContent';
+// @ts-expect-error - legacy SaasAble component
 import MiniDrawerStyled from './MiniDrawerStyled';
 
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import { DRAWER_WIDTH } from '@/config';
 
+/***************************  ADMIN LAYOUT - DRAWER - TYPES  ***************************/
+
+interface Props {
+  window?: () => Window;
+}
+
 /***************************  ADMIN LAYOUT - DRAWER  ***************************/
 
-export default function MainDrawer({ window }) {
+export default function MainDrawer({ window }: Props) {
+  const theme = useTheme();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const downLG = useMediaQuery((theme) => theme.breakpoints.down('lg'));
+  const downLG = useMediaQuery(theme.breakpoints.down('lg'));
 
   // Define container for drawer when window is specified
   const container = window !== undefined ? () => window().document.body : undefined;
@@ -55,15 +68,13 @@ export default function MainDrawer({ window }) {
       </Drawer>
 
       {/* Permanent mini-drawer for large media */}
-      <Activity mode={!downLG ? 'visible' : 'hidden'}>
+      {!downLG && (
         <MiniDrawerStyled variant="permanent" open={drawerOpen}>
           {drawerHeader}
           <Divider sx={{ mx: 2 }} />
           {drawerContent}
         </MiniDrawerStyled>
-      </Activity>
+      )}
     </Box>
   );
 }
-
-MainDrawer.propTypes = { window: PropTypes.func };

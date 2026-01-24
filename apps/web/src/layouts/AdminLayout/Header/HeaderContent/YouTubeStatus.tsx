@@ -27,7 +27,7 @@ export default function YouTubeStatus() {
             .eq('user_email', user.email)
             .single();
           
-          const tokens = profile?.youtube_tokens as any;
+          const tokens = profile?.youtube_tokens as { refresh_token?: string };
           setIsConnected(!!tokens?.refresh_token);
         }
       } catch (err) {

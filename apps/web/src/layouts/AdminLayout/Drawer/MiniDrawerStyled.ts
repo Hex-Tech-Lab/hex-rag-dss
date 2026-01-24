@@ -1,18 +1,18 @@
 // @mui
-import { styled } from '@mui/material/styles';
+import { styled, Theme, CSSObject } from '@mui/material/styles';
 import Drawer from '@mui/material/Drawer';
 
 // @project
 import { DRAWER_WIDTH } from '@/config';
 
-// Mixin for common ) (open/closed) drawer state0....
-const commonDrawerStyles = (theme) => ({
-  borderRight: `1px solid ${theme.vars.palette.grey[300]}`,
+// Mixin for common (open/closed) drawer state
+const commonDrawerStyles = (theme: Theme): CSSObject => ({
+  borderRight: `1px solid ${theme.palette.divider}`,
   overflowX: 'hidden'
 });
 
 // Mixin for opened drawer state
-const openedMixin = (theme) => ({
+const openedMixin = (theme: Theme): CSSObject => ({
   ...commonDrawerStyles(theme),
   width: DRAWER_WIDTH,
 
@@ -23,7 +23,7 @@ const openedMixin = (theme) => ({
 });
 
 // Mixin for closed drawer state
-const closedMixin = (theme) => ({
+const closedMixin = (theme: Theme): CSSObject => ({
   ...commonDrawerStyles(theme),
   width: 0,
 
@@ -35,7 +35,7 @@ const closedMixin = (theme) => ({
 
 /***************************  DRAWER - MINI STYLED  ***************************/
 
-const MiniDrawerStyled = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
+const MiniDrawerStyled = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })<{ open?: boolean }>(({ theme, open }) => ({
   width: DRAWER_WIDTH,
   flexShrink: 0,
   whiteSpace: 'nowrap',

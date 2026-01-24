@@ -8,10 +8,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 // @project
 import { CSS_VAR_PREFIX } from '@/config';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import CustomShadows from './custom-shadows';
 import { buildPalette } from './palette';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import componentsOverride from './overrides';
 import typography from './typography';
 

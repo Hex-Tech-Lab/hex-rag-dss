@@ -23,7 +23,7 @@ const MainCard = forwardRef<HTMLDivElement, MainCardProps>(({ children, sx = {},
     p: { xs: 1.75, sm: 2.25, md: 3 },
     border: `1px solid ${theme.palette.divider}`,
     borderRadius: 4,
-    // @ts-expect-error - custom shadows from SaasAble
+    // @ts-expect-error - legacy SaasAble component - custom shadows from SaasAble
     boxShadow: theme.customShadows?.section || theme.shadows[1],
     position: 'relative',
     bgcolor: theme.palette.background.paper

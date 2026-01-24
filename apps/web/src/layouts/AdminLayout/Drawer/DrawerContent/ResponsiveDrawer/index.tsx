@@ -1,18 +1,23 @@
+'use client';
+
 // @mui
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import menuItems from '@/menu';
+// @ts-expect-error - legacy SaasAble component
 import NavGroup from './NavGroup';
+import { NavItem } from '@/types/menu';
 
 /***************************  DRAWER CONTENT - RESPONSIVE DRAWER  ***************************/
 
 export default function ResponsiveDrawer() {
-  const navGroups = menuItems.items.map((item, index) => {
+  const navGroups = menuItems.items.map((item: NavItem, index: number) => {
     switch (item.type) {
       case 'group':
-        return <NavGroup key={index} item={item} />;
+        return <NavGroup key={item.id || index} item={item} />;
       default:
         return (
           <Typography key={index} variant="h6" color="error" align="center">
@@ -22,5 +27,5 @@ export default function ResponsiveDrawer() {
     }
   });
 
-  return <Box sx={{ py: 1, transition: 'all 0.3s ease-in-out' }}>{navGroups}</Box>;
+  return <Box sx={{ py: 1 }}>{navGroups}</Box>;
 }

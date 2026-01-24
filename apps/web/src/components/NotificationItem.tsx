@@ -1,7 +1,6 @@
 'use client';
-import PropTypes from 'prop-types';
 
-import { isValidElement } from 'react';
+import { isValidElement, ReactNode } from 'react';
 
 // @mui
 import Avatar from '@mui/material/Avatar';
@@ -11,29 +10,43 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import { AvatarSize } from '@/enum';
+
+/***************************  NOTIFICATION - LIST - TYPES  ***************************/
+
+interface Props {
+  avatar: any;
+  badgeAvatar?: any;
+  title: string;
+  subTitle?: string;
+  dateTime?: string;
+  isSeen?: boolean;
+}
 
 /***************************  NOTIFICATION - LIST  ***************************/
 
-export default function NotificationItem({ avatar, badgeAvatar, title, subTitle, dateTime, isSeen = false }) {
+export default function NotificationItem({ avatar, badgeAvatar, title, subTitle, dateTime, isSeen = false }: Props) {
   const ellipsis = { textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' };
 
-  const avatarContent = isValidElement(avatar) ? <Avatar color="default">{avatar}</Avatar> : <Avatar {...avatar} />;
+  const avatarContent = isValidElement(avatar) ? <Avatar>{avatar}</Avatar> : <Avatar {...avatar} />;
 
   return (
     <Stack direction="row" sx={{ width: 1, alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
       <Stack direction="row" sx={{ alignItems: 'center', gap: 1.25, flexShrink: 0 }}>
         {badgeAvatar ? (
-          // Box component for badge position due to parent Stack component
           <Box>
             <Badge
               overlap="circular"
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               badgeContent={
                 <Avatar
-                  color="default"
-                  size={AvatarSize.BADGE}
-                  sx={{ border: `1px solid`, borderColor: 'common.white' }}
+                  sx={{ 
+                    border: `1px solid`, 
+                    borderColor: 'common.white',
+                    // @ts-expect-error - legacy SaasAble component
+                    width: 14, height: 14 // fallback for AvatarSize.BADGE
+                  }}
                   {...badgeAvatar}
                 />
               }
@@ -46,7 +59,6 @@ export default function NotificationItem({ avatar, badgeAvatar, title, subTitle,
           avatarContent
         )}
       </Stack>
-      {/* minWidth: 0 -> Critical to ensure ellipsis works */}
       <Stack sx={{ flexGrow: 1, minWidth: 0, maxWidth: 1, gap: 0.25 }}>
         <Typography variant={isSeen ? 'body2' : 'subtitle2'} {...(isSeen && { color: 'grey.700' })} noWrap sx={ellipsis}>
           {title}
@@ -65,12 +77,3 @@ export default function NotificationItem({ avatar, badgeAvatar, title, subTitle,
     </Stack>
   );
 }
-
-NotificationItem.propTypes = {
-  avatar: PropTypes.any,
-  badgeAvatar: PropTypes.any,
-  title: PropTypes.any,
-  subTitle: PropTypes.any,
-  dateTime: PropTypes.any,
-  isSeen: PropTypes.bool
-};

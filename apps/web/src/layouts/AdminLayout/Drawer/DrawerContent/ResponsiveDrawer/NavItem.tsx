@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
-import { Activity, useEffect } from 'react';
+'use client';
+
+import { useEffect } from 'react';
 
 // @next
 import Link from 'next/link';
@@ -15,10 +16,18 @@ import ListItemText from '@mui/material/ListItemText';
 // @project
 import { handlerActiveItem, handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
 import DynamicIcon from '@/components/DynamicIcon';
+import { NavItem as NavItemType } from '@/types/menu';
+
+/***************************  RESPONSIVE DRAWER - ITEM - TYPES  ***************************/
+
+interface Props {
+  item: NavItemType;
+  level?: number;
+}
 
 /***************************  RESPONSIVE DRAWER - ITEM  ***************************/
 
-export default function NavItem({ item, level = 0 }) {
+export default function NavItem({ item, level = 0 }: Props) {
   const theme = useTheme();
   const { menuMaster } = useGetMenuMaster();
   const openItem = menuMaster.openedItem;
@@ -33,7 +42,7 @@ export default function NavItem({ item, level = 0 }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const iconcolor = theme.vars.palette.text.primary;
+  const iconcolor = theme.palette.text.primary;
 
   const itemHandler = () => {
     if (downMD) handlerDrawerOpen(false);
@@ -42,8 +51,9 @@ export default function NavItem({ item, level = 0 }) {
   return (
     <ListItemButton
       id={`${item.id}-btn`}
+      // @ts-expect-error - legacy SaasAble component
       component={Link}
-      href={item.url}
+      href={item.url || '#'}
       {...(item?.target && { target: '_blank' })}
       selected={openItem === item.id}
       disabled={item.disabled}
@@ -62,14 +72,12 @@ export default function NavItem({ item, level = 0 }) {
         })
       }}
     >
-      <Activity mode={level === 0 ? 'visible' : 'hidden'}>
+      {level === 0 && item.icon && (
         <ListItemIcon>
           <DynamicIcon name={item.icon} color={iconcolor} size={18} stroke={1.5} />
         </ListItemIcon>
-      </Activity>
+      )}
       <ListItemText primary={item.title} sx={{ mb: '-1px' }} />
     </ListItemButton>
   );
 }
-
-NavItem.propTypes = { item: PropTypes.any, level: PropTypes.number };

@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { Activity } from 'react';
+'use client';
 
 // @mui
 import IconButton from '@mui/material/IconButton';
@@ -8,29 +7,34 @@ import Box from '@mui/material/Box';
 
 // @project
 import { handlerDrawerOpen, useGetMenuMaster } from '@/states/menu';
+// @ts-expect-error - legacy SaasAble component
 import Logo from '@/components/logo';
 
 // @assets
 import { IconLayoutSidebarLeftCollapse, IconLayoutSidebarRightCollapse } from '@tabler/icons-react';
 
+/***************************  DRAWER HEADER - TYPES  ***************************/
+
+interface Props {
+  open: boolean;
+}
+
 /***************************  DRAWER HEADER  ***************************/
 
-export default function DrawerHeader({ open }) {
+export default function DrawerHeader({ open }: Props) {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
   return (
     <Box sx={{ width: 1, px: 2, py: { xs: 2, md: 2.5 } }}>
       <Stack direction="row" sx={{ alignItems: 'center', justifyContent: open ? 'space-between' : 'center', height: 36 }}>
-        <Activity mode={open ? 'visible' : 'hidden'}>
-          <Logo />
-        </Activity>
+        {open && <Logo />}
         <IconButton
           aria-label="open drawer"
           onClick={() => handlerDrawerOpen(!drawerOpen)}
           size="small"
           color="secondary"
-          variant="outlined"
+          sx={{ border: '1px solid', borderColor: 'divider' }}
         >
           {!drawerOpen ? <IconLayoutSidebarRightCollapse size={20} /> : <IconLayoutSidebarLeftCollapse size={20} />}
         </IconButton>
@@ -38,5 +42,3 @@ export default function DrawerHeader({ open }) {
     </Box>
   );
 }
-
-DrawerHeader.propTypes = { open: PropTypes.bool };

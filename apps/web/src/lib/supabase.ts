@@ -45,7 +45,7 @@ export const createClient = async () => {
   if (typeof window !== 'undefined') {
     return createBrowserClient();
   }
-  // @ts-ignore
+  // @ts-expect-error - legacy SaasAble component
   const { createClient: createServerClient } = await import('./supabase-ssr/server');
   return createServerClient();
 }

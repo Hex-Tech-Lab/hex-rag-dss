@@ -1,4 +1,6 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+'use client';
+
+import { Fragment, useEffect, useRef, useState, ChangeEvent, KeyboardEvent } from 'react';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -16,9 +18,12 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // @project
+// @ts-expect-error - legacy SaasAble component
 import EmptySearch from '@/components/header/empty-state/EmptySearch';
 import MainCard from '@/components/MainCard';
+// @ts-expect-error - legacy SaasAble component
 import NotificationItem from '@/components/NotificationItem';
+// @ts-expect-error - legacy SaasAble component
 import { AvatarSize } from '@/enum';
 
 // @assets
@@ -27,13 +32,13 @@ import { IconCommand, IconSearch } from '@tabler/icons-react';
 /***************************  HEADER - SEARCH DATA  ***************************/
 
 const profileData = [
-  { alt: 'Aplican Warner', src: '/assets/images/users/avatar-1.png', title: 'Aplican Warner', subTitle: 'Admin' },
-  { alt: 'Apliaye Aweoa', src: '/assets/images/users/avatar-2.png', title: 'Apliaye Aweoa', subTitle: 'Admin' }
+  { alt: 'Applicant Warner', src: '/assets/images/users/avatar-1.png', title: 'Applicant Warner', subTitle: 'Admin' },
+  { alt: 'Applicant Aweoa', src: '/assets/images/users/avatar-2.png', title: 'Applicant Aweoa', subTitle: 'Admin' }
 ];
 
-const listCotent = [
-  { title: 'Role', items: ['Applican', 'App User'] },
-  { title: 'Files', items: ['Applican', 'Applican'] }
+const listContent = [
+  { title: 'Role', items: ['Applicant', 'App User'] },
+  { title: 'Files', items: ['Applicant', 'Applicant'] }
 ];
 
 /***************************  HEADER - SEARCH BAR  ***************************/
@@ -43,69 +48,66 @@ export default function SearchBar() {
   const downSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   const buttonStyle = { borderRadius: 2, p: 1 };
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isEmptySearch, setIsEmptySearch] = useState(true);
   const [isPopperOpen, setIsPopperOpen] = useState(false);
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Function to open the popper
-  const openPopper = (event) => {
+  const openPopper = () => {
     setAnchorEl(inputRef.current);
     setIsPopperOpen(true);
   };
 
-  const handleActionClick = (event) => {
+  const handleActionClick = () => {
     if (isPopperOpen) {
-      // If popper is open, close it
       setIsPopperOpen(false);
       setAnchorEl(null);
     } else {
-      openPopper(event);
+      openPopper();
     }
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const isEmpty = event.target.value.trim() === '';
     setIsEmptySearch(isEmpty);
 
     if (!isPopperOpen && !isEmpty) {
-      openPopper(event);
+      openPopper();
     }
   };
 
-  const handleKeyDown = (event) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && !isPopperOpen) {
-      openPopper(event);
+      openPopper();
     } else if (event.key === 'Escape' && isPopperOpen) {
       setIsPopperOpen(false);
       setAnchorEl(null);
     } else if (event.ctrlKey && event.key === 'k') {
       event.preventDefault();
       if (!isPopperOpen) {
-        openPopper(event);
+        openPopper();
       }
     }
   };
 
-  const renderSubheader = (title, withMarginTop = false) => (
+  const renderSubheader = (title: string, withMarginTop = false) => (
     <ListSubheader sx={{ color: 'text.disabled', typography: 'caption', py: 0.5, px: 1, mb: 0.5, ...(withMarginTop && { mt: 1.5 }) }}>
       {title}
     </ListSubheader>
   );
 
-  const renderListItem = (item, index) => (
+  const renderListItem = (item: string, index: number) => (
     <ListItemButton key={index} sx={buttonStyle} onClick={handleActionClick}>
       <ListItemText primary={item} />
     </ListItemButton>
   );
 
   useEffect(() => {
-    const handleGlobalKeyDown = (event) => {
+    const handleGlobalKeyDown = (event: any) => {
       if (event.ctrlKey && event.key === 'k') {
         event.preventDefault();
-        // Check if the search input is not focused before opening the popper
         if (document.activeElement !== inputRef.current) {
-          openPopper(event);
+          openPopper();
           inputRef.current?.focus();
         }
       }
@@ -115,7 +117,7 @@ export default function SearchBar() {
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [isPopperOpen]);
+  }, []);
 
   return (
     <>
@@ -157,7 +159,8 @@ export default function SearchBar() {
             <MainCard
               sx={{
                 borderRadius: 2,
-                boxShadow: theme.vars.customShadows.tooltip,
+                // @ts-expect-error - legacy SaasAble component
+                boxShadow: theme.customShadows?.tooltip || theme.shadows[1],
                 width: 1,
                 minWidth: { xs: 352, sm: 240 },
                 maxWidth: { xs: 352, md: 420 },
@@ -170,28 +173,30 @@ export default function SearchBar() {
                   setAnchorEl(null);
                 }}
               >
-                {isEmptySearch ? (
-                  <EmptySearch />
-                ) : (
-                  <List disablePadding>
-                    {renderSubheader('Users')}
-                    {profileData.map((user, index) => (
-                      <ListItemButton sx={buttonStyle} key={index} onClick={handleActionClick}>
-                        <NotificationItem
-                          avatar={{ alt: user.alt, src: user.src, size: AvatarSize.XS }}
-                          title={user.title}
-                          subTitle={user.subTitle}
-                        />
-                      </ListItemButton>
-                    ))}
-                    {listCotent.map((list, item) => (
-                      <Fragment key={item}>
-                        {renderSubheader(list.title, true)}
-                        {list.items.map((item, index) => renderListItem(item, index))}
-                      </Fragment>
-                    ))}
-                  </List>
-                )}
+                <div>
+                  {isEmptySearch ? (
+                    <EmptySearch />
+                  ) : (
+                    <List disablePadding>
+                      {renderSubheader('Users')}
+                      {profileData.map((user, index) => (
+                        <ListItemButton sx={buttonStyle} key={index} onClick={handleActionClick}>
+                          <NotificationItem
+                            avatar={{ alt: user.alt, src: user.src, size: AvatarSize.XS }}
+                            title={user.title}
+                            subTitle={user.subTitle}
+                          />
+                        </ListItemButton>
+                      ))}
+                      {listContent.map((list, index) => (
+                        <Fragment key={index}>
+                          {renderSubheader(list.title, true)}
+                          {list.items.map((item, idx) => renderListItem(item, idx))}
+                        </Fragment>
+                      ))}
+                    </List>
+                  )}
+                </div>
               </ClickAwayListener>
             </MainCard>
           </Fade>

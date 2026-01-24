@@ -1,11 +1,16 @@
 import { getSupabase } from '@/lib/supabase';
 import { generateEmbedding } from '@/lib/rag/embed';
 
+export interface VectorSearchResult {
+  results: unknown[];
+  decisions: unknown[];
+}
+
 /**
  * Vector Search Utility (Action 9.3 & 10.5)
  * Performs RAG search and prioritizes "New Truths" (Decisions).
  */
-export const vectorSearch = async (query: string, limit: number = 10) => {
+export const vectorSearch = async (query: string, limit: number = 10): Promise<VectorSearchResult> => {
   const supabase = await getSupabase();
   const embedding = await generateEmbedding(query);
 

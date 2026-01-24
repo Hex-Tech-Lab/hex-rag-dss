@@ -13,7 +13,7 @@ interface Props {
 /***************************  DYNAMIC - TABLER ICONS  ***************************/
 
 export default function DynamicIcon({ name, size = 24, color = 'currentColor', stroke = 2 }: Props) {
-  // @ts-expect-error - Dynamically get the icon component based on the `name` prop
+  // @ts-expect-error - legacy SaasAble component - Dynamically get the icon component based on the `name` prop
   const IconComponent = TablerIcons[name];
 
   // If the provided `name` does not match any icon in TablerIcons, return null to avoid rendering errors

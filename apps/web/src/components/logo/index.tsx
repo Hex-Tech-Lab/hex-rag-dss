@@ -8,9 +8,9 @@ import { useTheme, SxProps, Theme } from '@mui/material/styles';
 import ButtonBase from '@mui/material/ButtonBase';
 
 // @project
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import LogoMain from './LogoMain';
-// @ts-expect-error
+// @ts-expect-error - legacy SaasAble component
 import LogoIcon from './LogoIcon';
 import { APP_DEFAULT_PATH } from '@/config';
 import { generateFocusStyle } from '@/utils/generateFocusStyle';
@@ -34,7 +34,7 @@ export default function LogoSection({ isIcon, sx, to }: Props) {
         disableRipple 
         sx={{ 
           ...sx, 
-          // @ts-expect-error
+          // @ts-expect-error - legacy SaasAble component
           '&:focus-visible': generateFocusStyle(theme.palette.primary.main) 
         }} 
         aria-label="logo"

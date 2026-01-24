@@ -101,7 +101,7 @@ export default function ChatPage() {
           onKeyDown={(e) => {
             if (e.key !== 'Enter') return;
             const nativeEvent = e.nativeEvent as KeyboardEvent;
-            const isComposing = nativeEvent.isComposing || (nativeEvent as any).keyCode === 229;
+            const isComposing = nativeEvent.isComposing || (nativeEvent as unknown as { keyCode: number }).keyCode === 229;
             if (isComposing || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
             e.preventDefault();
             handleSend();
