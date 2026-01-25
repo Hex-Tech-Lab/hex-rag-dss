@@ -35,30 +35,31 @@ interface Props {
 /***************************  ADMIN LAYOUT  ***************************/
 
 export default function DashboardLayout({ children }: Props) {
-  const hasMounted = useHasMounted();
   const { menuMaster, menuMasterLoading } = useGetMenuMaster();
   const { themeDirection } = useConfig();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const isMobile = useMediaQuery((theme: any) => theme.breakpoints.down('md'), { noSsr: true });
+  // We keep JS media queries for 'logic' (like drawer auto-close) but NOT for 'rendering' existence
   const downXL = useMediaQuery((theme: any) => theme.breakpoints.down('xl'), { noSsr: true });
 
   useEffect(() => {
-    if (hasMounted) {
-      handlerDrawerOpen(!downXL);
-    }
-  }, [downXL, hasMounted]);
+    handlerDrawerOpen(!downXL);
+  }, [downXL]);
 
-  if (menuMasterLoading || !hasMounted) return <Loader />;
+  if (menuMasterLoading) return <Loader />;
 
   return (
     <Stack direction="row" width={1}>
       <Header />
-      {!isMobile && <Drawer />}
+      
+      {/* Sidebar: Always render, hide via CSS on mobile */}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <Drawer />
+      </Box>
       
       <Box 
         component="main" 
         sx={{ 
-          width: isMobile ? '100%' : `calc(100% - ${drawerOpen ? DRAWER_WIDTH : 0}px)`, 
+          width: { xs: '100%', md: `calc(100% - ${drawerOpen ? DRAWER_WIDTH : 0}px)` }, 
           flexGrow: 1, 
           p: { xs: 2, sm: 3 },
           minHeight: '100vh',
@@ -67,7 +68,7 @@ export default function DashboardLayout({ children }: Props) {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),
-          pb: isMobile ? '80px' : 3 // Space for bottom nav
+          pb: { xs: '80px', md: 3 } // Space for bottom nav
         }}
       >
         <Toolbar sx={{ minHeight: { xs: 54, sm: 46, md: 76 } }} />
@@ -89,7 +90,10 @@ export default function DashboardLayout({ children }: Props) {
         </Container>
       </Box>
 
-      {isMobile && <BottomNav />}
+      {/* Mobile Bar: Always render, hide via CSS on desktop */}
+      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+        <MobileControlBar />
+      </Box>
     </Stack>
   );
 }
