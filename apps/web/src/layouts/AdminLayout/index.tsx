@@ -24,7 +24,7 @@ import { DRAWER_WIDTH } from '@/config';
 import { useHasMounted } from '@/hooks/useHasMounted';
 
 // New Mobile components
-import BottomNav from '@/components/organisms/navigation/BottomNav';
+import MobileControlBar from '@/components/MobileControlBar';
 
 /***************************  ADMIN LAYOUT - TYPES  ***************************/
 
